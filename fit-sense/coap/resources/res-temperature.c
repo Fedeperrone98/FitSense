@@ -10,8 +10,8 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
 static void res_event_handler(void);
 
 static struct temperature_str{
-    int value;
-    int state;
+    int value = 0;
+    bool air_conditioner_on = false;
 }temperature_mem;
 
 EVENT_RESOURCE(
@@ -24,9 +24,17 @@ EVENT_RESOURCE(
     res_event_handler
 );
 
-void set_temperature(char msg[]){
-    int temperature = (5 + random_rand()%35);
+void set_air_conditioner_status(bool on){
+    temperature_mem.air_conditioner_on = on;
+}
 
+void set_temperature(char msg[]){
+    int temperature;
+    if(temperature_mem.air_conditioner_on == false){
+        temperature = (5 + random_rand()%35);
+    }else {
+        temperature = (19 + random_rand()%4);
+    }
     temperature_mem.value = temperature;
 
     LOG_INFO("[+] temperature detected: %d\n", temperature);
@@ -42,9 +50,6 @@ void set_temperature(char msg[]){
 static void
 res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  if(temperature_mem.state == STATE_ERROR)
-        return;
-
     char reply[MSG_SIZE];
 
     LOG_INFO(" <  GET actuator/temperature\n")
@@ -57,8 +62,6 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 static void
 res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  if(humidity_mem.state == STATE_ERROR)
-    	return;  
 }
 
 static void

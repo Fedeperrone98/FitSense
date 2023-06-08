@@ -10,8 +10,8 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
 static void res_event_handler(void);
 
 static struct humidity_str{
-    int value;
-    int state;
+    int value = 0;
+    bool dehumidifier_on = false;
 }humidity_mem;
 
 EVENT_RESOURCE(
@@ -24,11 +24,24 @@ EVENT_RESOURCE(
     res_event_handler
 );
 
+void set_dehumidifier_status(bool on){
+    humidity_mem.dehumidifier_on = on;
+}
+
 void set_humidity(char msg[]){
-    // Generazione di un numero casuale compreso tra 0 e 100
-    int random = random_rand() % 101;
-    // Mapping del numero casuale nell'intervallo 20-80
-    int humidity = (random * 60 / 100) + 20;
+    int random;
+    int humidity;
+    if(humidity_mem.dehumidifier_on == 0){
+        // Generazione di un numero casuale compreso tra 0 e 100
+        random = random_rand() % 101;
+        // Mapping del numero casuale nell'intervallo 20-80
+        humidity = (random * 60 / 100) + 20;
+    }else{
+        // Generazione di un numero casuale compreso tra 0 e 100
+        random = random_rand() % 101;
+        // Mapping del numero casuale nell'intervallo 20-25
+        humidity = (random * 5 / 100) + 20;
+    }
 
     humidity_mem.value = humidity;
 
@@ -45,9 +58,6 @@ void set_humidity(char msg[]){
 static void
 res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-    if(humidity_mem.state == STATE_ERROR)
-        return;
-
     char reply[MSG_SIZE];
 
     LOG_INFO(" <  GET actuator/humidity\n")
@@ -60,9 +70,7 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 static void
 res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-    if(humidity_mem.state == STATE_ERROR)
-        return;
-  
+    
 }
 
 static void

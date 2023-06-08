@@ -12,8 +12,7 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
 static void res_event_handler(void);
 
 static struct presence_str{
-    int value;
-    int state;
+    int value = 0;
 }presence_mem;
 
 EVENT_RESOURCE(
@@ -44,8 +43,6 @@ void set_presence(char msg[]){
 static void
 res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-	if(presence_mem.state == STATE_ERROR)
-        return;
 
     char reply[MSG_SIZE];
 
@@ -59,8 +56,8 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 static void
 res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-	if(presence_mem.state == STATE_ERROR)
-        return;
+    
+
 }
 
 static void
