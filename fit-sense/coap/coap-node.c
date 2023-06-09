@@ -16,6 +16,16 @@
 #define CLOCK_MINUTE        CLOCK_SECOND * 60
 #define MSG_SIZE            200
 
+void set_humidity_etimer();
+void set_temperature_etimer();
+void set_presence_etimer();
+bool check_temperature_timer_expired();
+bool check_humidity_timer_expired();
+bool check_presence_timer_expired();
+void restart_presence_timer();
+void restart_temperature_timer();
+void restart_humidity_timer();
+
 static struct etimer btn_etimer;
 static struct etimer led_etimer;
 
@@ -78,6 +88,36 @@ void client_chunk_handler(coap_message_t *response){
         puts("Request timed out");
         return;
     }
+
+    coap_get_payload(response, &chunk);
+    char msg[MSG_SIZE];
+    sprintf(msg,"%s",(char*)chunk);
+
+    int n_arguments = 1; 
+    char arguments[n_arguments][100];
+    parse_json(msg, n_arguments, arguments );
+    
+    LOG_INFO("[!] ASSIGN_CONFIG command elaboration ...\n");
+
+    LOG_INFO(" <  %s \n", msg);
+
+
+    if(strcmp(arguments[0], "server_ok") == 0){
+        STATE = STATE_REGISTERED;
+        LOG_INFO("[+] ASSIGN_CONFIG command elaborated with success\n");
+        return;
+    }
+    else if(strcmp(arguments[0], "error_area") == 0){
+        LOG_INFO("[-] area selected doesn't exist\n");
+        STATE = STATE_ERROR;
+        return;
+    }
+    else if(strcmp(arguments[0], "error_id") == 0){
+        LOG_INFO("[-] node with the same id already exists\n");
+        STATE = STATE_ERROR;
+        return;
+    }    
+
 }
 
 PROCESS_THREAD(coap_node, ev, data)
@@ -104,89 +144,132 @@ PROCESS_THREAD(coap_node, ev, data)
     area_id = 0;
     node_id = 0;
 
-    while(1) {
-        PROCESS_YIELD();
+    STATE=STATE_ERROR;
 
-        if( ev == PROCESS_EVENT_TIMER){
-            if(etimer_expired(&led_etimer)){
-                leds_single_toggle(LEDS_RED);
-                etimer_restart(&led_etimer);
-            }
+    while(STATE==STATE_ERROR)
+    {
+        while(1) {
+            PROCESS_YIELD();
 
-            if(btn_count > 0 && etimer_expired(&btn_etimer)){
-                if(!area_id_setted){
-                    area_id = btn_count;
-                    area_id_setted = true;
+            if( ev == PROCESS_EVENT_TIMER){
+                if(etimer_expired(&led_etimer)){
+                    leds_single_toggle(LEDS_RED);
+                    etimer_restart(&led_etimer);
+                }
 
-                    // Green LED flashes for correct area_id setting
-                    leds_single_on(LEDS_GREEN);
-                    etimer_reset_with_new_interval(&led_etimer, 2 * CLOCK_SECOND);
-                    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
-                    leds_single_off(LEDS_GREEN);
+                if(btn_count > 0 && etimer_expired(&btn_etimer)){
+                    if(!area_id_setted){
+                        area_id = btn_count;
+                        area_id_setted = true;
 
-                    // Red LED flashes while waiting for user interaction for node_id setting
-                    etimer_set(&led_etimer,0.5 * CLOCK_SECOND);
-                    leds_single_on(LEDS_RED);
+                        // Green LED flashes for correct area_id setting
+                        leds_single_on(LEDS_GREEN);
+                        etimer_reset_with_new_interval(&led_etimer, 2 * CLOCK_SECOND);
+                        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
+                        leds_single_off(LEDS_GREEN);
 
-                    LOG_INFO("[!] manual node_id setting\n");
-                    btn_count = 0;
-                }else{
-                    node_id = btn_count;
+                        // Red LED flashes while waiting for user interaction for node_id setting
+                        etimer_set(&led_etimer,0.5 * CLOCK_SECOND);
+                        leds_single_on(LEDS_RED);
 
-                    // Green LED flashes for correct node_id setting
-                    leds_single_on(LEDS_GREEN);
-                    etimer_reset_with_new_interval(&led_etimer, 2 * CLOCK_SECOND);
-                    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
-                    leds_single_off(LEDS_GREEN);
+                        LOG_INFO("[!] manual node_id setting\n");
+                        btn_count = 0;
+                    }else{
+                        node_id = btn_count;
 
-                    break;
+                        // Green LED flashes for correct node_id setting
+                        leds_single_on(LEDS_GREEN);
+                        etimer_reset_with_new_interval(&led_etimer, 2 * CLOCK_SECOND);
+                        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
+                        leds_single_off(LEDS_GREEN);
+
+                        break;
+                    }
                 }
             }
+
+            if(ev == button_hal_press_event){
+                LOG_INFO("[!] button pressed\n");
+
+                // Stop Red LED flashes
+                leds_single_off(LEDS_RED);
+                etimer_stop(&led_etimer);
+
+                btn_count++;
+                if(btn_count == 1 && !area_id_setted)
+                    etimer_set(&btn_etimer, 3 * CLOCK_SECOND);
+                else    
+                    etimer_restart(&btn_etimer);
+            }
+
+        }   
+
+        LOG_INFO("[+] area %d selected \n", area_id);
+        LOG_INFO("[+] id %d selected \n", node_id);
+
+        save_config(area_id, node_id); 
+
+        LOG_INFO("[!] intialization ended\n");
+        STATE = STATE_INITIALIZED;
+
+        coap_activate_resource(&res_configuration, "actuator/configuration");
+        coap_activate_resource(&res_humidity, "actuator/humidity");
+        coap_activate_resource(&res_presence, "actuator/presence");
+        coap_activate_resource(&res_temperature, "actuator/temperature");
+        coap_activate_resource(&res_dehumidifier, "actuator/dehumidifier");
+        coap_activate_resource(&res_air_conditioner, "actuator/air_conditioner");
+
+        LOG_INFO("[!] registration ... \n");
+
+        char msg[MSG_SIZE];
+        sprintf(msg, "{\"area_id\":%d,\"node_id\":%d}", area_id, node_id);
+
+        coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &coap_module.server_ep);
+        coap_init_message(coap_module.request, COAP_TYPE_CON, COAP_POST, 0);
+        coap_set_header_uri_path(coap_module.request, "/registration");
+        coap_set_payload(coap_module.request, (uint8_t *)msg, strlen(msg));
+
+        while(1){
+            COAP_BLOCKING_REQUEST(&coap_module.server_ep, coap_module.request, client_chunk_handler);
+
+            if(STATE==STATE_REGISTERED)
+                break;
+            else if(STATE==STATE_ERROR){
+                LOG_INFO("[-] configuration failed\n");
+
+                leds_single_toggle(LEDS_RED);
+                etimer_restart(&led_etimer);
+                break;
+            }
+            
         }
-
-        if(ev == button_hal_press_event){
-            LOG_INFO("[!] button pressed\n");
-
-            // Stop Red LED flashes
-            leds_single_off(LEDS_RED);
-            etimer_stop(&led_etimer);
-
-            btn_count++;
-            if(btn_count == 1 && !area_id_setted)
-                etimer_set(&btn_etimer, 3 * CLOCK_SECOND);
-            else    
-                etimer_restart(&btn_etimer);
-        }
-
     }
 
-    LOG_INFO("[+] area %d selected \n", area_id);
-    LOG_INFO("[+] id %d selected \n", node_id);
+    LOG_INFO("[!] node online\n");
 
-    save_config(area_id, node_id); 
+    set_humidity_etimer();
+    set_temperature_etimer();
+    set_presence_etimer();
 
-    LOG_INFO("[!] intialization ended\n");
-    STATE = STATE_INITIALIZED;
+    while(true){
 
-    coap_activate_resource(&res_configuration, "actuator/configuration");
-    coap_activate_resource(&res_humidity, "actuator/humidity");
-    coap_activate_resource(&res_presence, "actuator/presence");
-    coap_activate_resource(&res_temperature, "actuator/temperature");
-    coap_activate_resource(&res_dehumidifier, "actuator/dehumidifier");
-    coap_activate_resource(&res_air_conditioner, "actuator/air_conditioner");
+        PROCESS_YIELD();
 
-    LOG_INFO("[!] registration ... \n");
+        if(check_humidity_timer_expired()){
+            res_humidity.trigger();
+            restart_humidity_timer();
+        }
 
-    char msg[MSG_SIZE];
-    sprintf(msg, "{\"area_id\":%d,\"node_id\":%d}", area_id, node_id);
+        if(check_temperature_timer_expired()){
+            res_temperature.trigger();
+            restart_temperature_timer();
+        }
 
-    coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &coap_module.server_ep);
-    coap_init_message(coap_module.request, COAP_TYPE_CON, COAP_POST, 0);
-    coap_set_header_uri_path(coap_module.request, "/registration");
-    coap_set_payload(coap_module.request, (uint8_t *)msg, strlen(msg));
+        if(check_presence_timer_expired()){
+            res_presence.trigger();
+            restart_presence_timer();
+        }
 
-    while(1){
-        COAP_BLOCKING_REQUEST(&coap_module.server_ep, coap_module.request, client_chunk_handler);
     }
 
     PROCESS_END();

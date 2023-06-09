@@ -12,6 +12,7 @@ static void res_event_handler(void);
 static struct humidity_str{
     int value = 0;
     bool dehumidifier_on = false;
+    struct etimer humidity_etimer;
 }humidity_mem;
 
 EVENT_RESOURCE(
@@ -23,6 +24,18 @@ EVENT_RESOURCE(
     NULL,
     res_event_handler
 );
+
+void set_humidity_etimer(){
+  etimer_set(&humidity_mem.humidity_etimer, NOTIFICATION_TIME_HUMIDITY * CLOCK_SECOND);
+}
+
+bool check_humidity_timer_expired(){
+  return etimer_expired(&humidity_mem.humidity_etimer);
+}
+
+void restart_humidity_timer(){
+  etimer_reset(&humidity_mem.humidity_etimer);
+}
 
 void set_dehumidifier_status(bool on){
     humidity_mem.dehumidifier_on = on;

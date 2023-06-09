@@ -13,6 +13,7 @@ static void res_event_handler(void);
 
 static struct presence_str{
     int value = 0;
+    struct etimer presence_etimer;
 }presence_mem;
 
 EVENT_RESOURCE(
@@ -24,6 +25,18 @@ EVENT_RESOURCE(
     NULL,
     res_event_handler
 );
+
+void set_presence_etimer(){
+  etimer_set(&presence_mem.presence_etimer, NOTIFICATION_TIME_PRESENCE * CLOCK_SECOND);
+}
+
+bool check_presence_timer_expired(){
+  return etimer_expired(&presence_mem.presence_etimer);
+}
+
+void restart_presence_timer(){
+  etimer_reset(&presence_mem.presence_etimer);
+}
 
 void set_presence(char msg[]){
     int presence = random_rand() % MAX_CAPACITY;

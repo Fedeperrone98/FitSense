@@ -8,6 +8,10 @@
 
 #define MSG_SIZE    200
 
+#define NOTIFICATION_TIME_TEMPERATURE 600
+#define NOTIFICATION_TIME_HUMIDITY 601
+#define NOTIFICATION_TIME_PRESENCE 602
+
 static struct etimer led_etimer;
 
 void parse_json(char json[], int n_arguments, char arguments[][100]);

@@ -12,6 +12,7 @@ static void res_event_handler(void);
 static struct temperature_str{
     int value = 0;
     bool air_conditioner_on = false;
+    struct etimer temperature_etimer;
 }temperature_mem;
 
 EVENT_RESOURCE(
@@ -23,6 +24,18 @@ EVENT_RESOURCE(
     NULL,
     res_event_handler
 );
+
+void set_temperature_etimer(){
+  etimer_set(&temperature_mem.temperature_etimer, NOTIFICATION_TIME_TEMPERATURE * CLOCK_SECOND);
+}
+
+bool check_temperature_timer_expired(){
+  return etimer_expired(&temperature_mem.temperature_etimer);
+}
+
+void restart_temperature_timer(){
+  etimer_reset(&temperature_mem.temperature_etimer);
+}
 
 void set_air_conditioner_status(bool on){
     temperature_mem.air_conditioner_on = on;
