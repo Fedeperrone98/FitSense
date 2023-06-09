@@ -1,5 +1,6 @@
 package it.unipi.iot.registration;
 
+import it.unipi.iot.coap_client_handler.MyCoapClient;
 import it.unipi.iot.db_handler.FitSenseDBHandler;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP;
@@ -10,6 +11,9 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
 public class RegistrationResource extends CoapResource {
+
+    private final static MyCoapClient coapClient = MyCoapClient.getInstance();
+
     public RegistrationResource(String name) {
         super(name);
     }
@@ -43,6 +47,10 @@ public class RegistrationResource extends CoapResource {
                     FitSenseDBHandler.insertConfiguration(area_id, node_id, ipAddress);
 
                     System.out.println("[!] Finish insertion node");
+
+                    coapClient.startTemperatureObservation(ipAddress);
+                    coapClient.startHumidityObservation(ipAddress);
+                    coapClient.startPresenceObservation(ipAddress, area_id);
                 }
             }
 
@@ -51,8 +59,6 @@ public class RegistrationResource extends CoapResource {
             exchange.respond(response);
 
             System.out.println(" > "+ jsonString_response );
-
-
 
         } catch (ParseException e) {
             e.printStackTrace();

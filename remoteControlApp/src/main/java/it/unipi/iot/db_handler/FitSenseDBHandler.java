@@ -118,6 +118,23 @@ public class FitSenseDBHandler {
         return false;
     }
 
+    public static int getMaxPresenceArea(int id){
+        String selectQueryStatement = "SELECT * FROM area WHERE id=?";
+        try (Connection smartPoolConnection = makeDBConnection();
+             PreparedStatement smartPoolPrepareStat = smartPoolConnection.prepareStatement(selectQueryStatement);
+        ) {
+            smartPoolPrepareStat.setInt(1, id);
+            // Execute the query
+            ResultSet resultSet = smartPoolPrepareStat.executeQuery();
+
+            return resultSet.getInt("max_presence");
+
+        } catch (SQLException sqlex) {
+            sqlex.printStackTrace();
+        }
+        return 0;
+    }
+
     public static boolean checkNodeExistance(int area_id, int node_id){
         String selectQueryStatement = "SELECT * FROM configuration WHERE area_id=? and node_id=?";
         try (Connection smartPoolConnection = makeDBConnection();

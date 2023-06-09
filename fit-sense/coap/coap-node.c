@@ -44,7 +44,8 @@ extern coap_resource_t
     res_presence,
     res_temperature,
     res_dehumidifier,
-    res_air_conditioner;
+    res_air_conditioner,
+    res_semaphore;
 
 
 PROCESS(coap_node, "Coap node");
@@ -218,6 +219,7 @@ PROCESS_THREAD(coap_node, ev, data)
         coap_activate_resource(&res_temperature, "actuator/temperature");
         coap_activate_resource(&res_dehumidifier, "actuator/dehumidifier");
         coap_activate_resource(&res_air_conditioner, "actuator/air_conditioner");
+        coap_activate_resource(&res_semaphore, "actuator/semaphore");
 
         LOG_INFO("[!] registration ... \n");
 
