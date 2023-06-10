@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
+// Define server resource
 public class RegistrationResource extends CoapResource {
 
     private final static MyCoapClient coapClient = MyCoapClient.getInstance();
@@ -19,6 +20,10 @@ public class RegistrationResource extends CoapResource {
     }
 
     @Override
+    /**
+     * Function to handle the registration requests from coap-nodes
+     * CoapExchange is used to retrieve information on the request
+     */
     public void handlePOST(CoapExchange exchange) {
         String msg = exchange.getRequestText();
         String ipAddress = exchange.getSourceAddress().getHostAddress();
@@ -27,15 +32,18 @@ public class RegistrationResource extends CoapResource {
 
         JSONObject genreJsonObject = null;
         try {
+            // Obtain information from json message
             genreJsonObject = (JSONObject) JSONValue.parseWithException(msg);
             int node_id = (int) genreJsonObject.get("node_id");
             int area_id = (int) genreJsonObject.get("area_id");
             String jsonString_response;
 
+            // Check the existence of the area_id
             if (!FitSenseDBHandler.getArea(area_id)){
                 jsonString_response = "{\"status\": \"error_area\"}";
             }
             else {
+                // Check the presence of a node characterized with the same Ids
                 if(FitSenseDBHandler.checkNodeExistance(area_id, node_id)){
                     jsonString_response = "{\"status\": \"error_id\"}";
                 }

@@ -62,7 +62,7 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"off\"}";
             }
 
-            // Send the PUT request
+            // Send the PUT request to handle the air conditioner
             CoapResponse airConditionerResponse = clientAirConditioner.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
             System.out.println(" > " + jsonString_response);
 
@@ -112,7 +112,7 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"off\"}";
             }
 
-            // Send the PUT request
+            // Send the PUT request to handle the dehumidifier
             CoapResponse dehumidifierResponse = clientDehumidifier.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
             System.out.println(" > " + jsonString_response);
 
@@ -163,7 +163,7 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"off\"}";
             }
 
-            // Send the PUT request
+            // Send the PUT request to handle the semaphore
             CoapResponse semaphoreResponse = clientSemaphore.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
             System.out.println(" > " + jsonString_response);
 
