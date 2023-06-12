@@ -107,7 +107,7 @@ public class UserInputController implements Runnable{
                     case 7 -> { // update area max presence
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             System.out.println("Insert new max_presence area:");
                             int max_presence = Integer.parseInt(reader.readLine());
                             FitSenseDBHandler.updateMaxPresenceArea(area_id, max_presence);
@@ -118,7 +118,7 @@ public class UserInputController implements Runnable{
                     case 8 -> { // get current temperature
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");
@@ -133,7 +133,7 @@ public class UserInputController implements Runnable{
                     case 9 -> { // get current humidity
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");
@@ -148,7 +148,7 @@ public class UserInputController implements Runnable{
                     case 10 -> {  // get current presence
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");
@@ -163,7 +163,7 @@ public class UserInputController implements Runnable{
                     case 11 -> { // turn on air conditioner
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");
@@ -179,10 +179,10 @@ public class UserInputController implements Runnable{
                             System.out.println("There is no area with this id");
                         }
                     }
-                    case 12 -> {// turn off air conditioner
+                    case 12 -> {// turn off air-conditioner
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");
@@ -201,7 +201,7 @@ public class UserInputController implements Runnable{
                     case 13 -> { // turn on dehumidifier
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");
@@ -220,7 +220,7 @@ public class UserInputController implements Runnable{
                     case 14 -> { // turn off dehumidifier
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");
@@ -239,7 +239,7 @@ public class UserInputController implements Runnable{
                     case 15 -> { // turn on semaphore
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");
@@ -258,7 +258,7 @@ public class UserInputController implements Runnable{
                     case 16 -> { // turn off semaphore
                         System.out.println("Insert area id:");
                         int area_id = Integer.parseInt(reader.readLine());
-                        if (FitSenseDBHandler.checkAreaExistance(area_id)) {
+                        if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
                                 System.out.println("There are no actuators in this area");

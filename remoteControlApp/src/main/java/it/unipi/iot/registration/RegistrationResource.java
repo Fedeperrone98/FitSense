@@ -20,17 +20,19 @@ public class RegistrationResource extends CoapResource {
     }
 
     @Override
-    /**
+    /*
      * Function to handle the registration requests from coap-nodes
      * CoapExchange is used to retrieve information on the request
      */
     public void handlePOST(CoapExchange exchange) {
+        System.out.println("[!] Receiving POST request");
+
         String msg = exchange.getRequestText();
         String ipAddress = exchange.getSourceAddress().getHostAddress();
 
         System.out.println("<  " + msg);
 
-        JSONObject genreJsonObject = null;
+        JSONObject genreJsonObject;
         try {
             // Obtain information from json message
             genreJsonObject = (JSONObject) JSONValue.parseWithException(msg);
@@ -39,12 +41,12 @@ public class RegistrationResource extends CoapResource {
             String jsonString_response;
 
             // Check the existence of the area_id
-            if (!FitSenseDBHandler.checkAreaExistance(area_id)){
+            if (!FitSenseDBHandler.checkAreaExistence(area_id)){
                 jsonString_response = "{\"status\": \"error_area\"}";
             }
             else {
                 // Check the presence of a node characterized with the same Ids
-                if(FitSenseDBHandler.checkNodeExistance(area_id, node_id)){
+                if(FitSenseDBHandler.checkNodeExistence(area_id, node_id)){
                     jsonString_response = "{\"status\": \"error_id\"}";
                 }
                 else{

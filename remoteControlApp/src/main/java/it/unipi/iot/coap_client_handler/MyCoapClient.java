@@ -15,11 +15,8 @@ import java.io.IOException;
 public class MyCoapClient extends CoapClient {
 
     private static MyCoapClient instance = null;
-    private CoapClient clientTemperatureObs = null;
     private CoapClient clientAirConditioner = null;
-    private CoapClient clientHumidityObs = null;
     private CoapClient clientDehumidifier = null;
-    private CoapClient clientPresenceObs = null;
     private CoapClient clientSemaphore = null;
 
     public static MyCoapClient getInstance() {
@@ -152,7 +149,7 @@ public class MyCoapClient extends CoapClient {
     }
 
     public void startTemperatureObservation(String ipAddress) {
-        clientTemperatureObs = new CoapClient("coap://[" + ipAddress + "]/actuator/temperature");
+        CoapClient clientTemperatureObs = new CoapClient("coap://[" + ipAddress + "]/actuator/temperature");
         clientAirConditioner = new CoapClient("coap://[" + ipAddress + "]/actuator/air_conditioner");
         clientTemperatureObs.observe(
                 new CoapHandler() {
@@ -171,7 +168,7 @@ public class MyCoapClient extends CoapClient {
         System.out.println("[!] Receiving temperature notification");
         String responseString = new String(response.getPayload());
         System.out.println(" < " + responseString);
-        JSONObject genreJsonObject = null;
+        JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
             int value = (int) genreJsonObject.get("value");
@@ -213,7 +210,7 @@ public class MyCoapClient extends CoapClient {
     }
 
     public void startHumidityObservation(String ipAddress) {
-        clientHumidityObs = new CoapClient("coap://[" + ipAddress + "]/actuator/humidity");
+        CoapClient clientHumidityObs = new CoapClient("coap://[" + ipAddress + "]/actuator/humidity");
         clientDehumidifier = new CoapClient("coap://[" + ipAddress + "]/actuator/dehumidifier");
         clientHumidityObs.observe(
                 new CoapHandler() {
@@ -232,7 +229,7 @@ public class MyCoapClient extends CoapClient {
         System.out.println("[!] Receiving humidity notification");
         String responseString = new String(response.getPayload());
         System.out.println(" < " + responseString);
-        JSONObject genreJsonObject = null;
+        JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
             int value = (int) genreJsonObject.get("value");
@@ -275,7 +272,7 @@ public class MyCoapClient extends CoapClient {
     }
 
     public void startPresenceObservation(String ipAddress, int area_id) {
-        clientPresenceObs = new CoapClient("coap://[" + ipAddress + "]/actuator/presence");
+        CoapClient clientPresenceObs = new CoapClient("coap://[" + ipAddress + "]/actuator/presence");
         clientSemaphore = new CoapClient("coap://[" + ipAddress + "]/actuator/semaphore");
         clientPresenceObs.observe(
                 new CoapHandler() {
@@ -294,7 +291,7 @@ public class MyCoapClient extends CoapClient {
         System.out.println("[!] Receiving presence notification");
         String responseString = new String(response.getPayload());
         System.out.println(" < " + responseString);
-        JSONObject genreJsonObject = null;
+        JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
             int value = (int) genreJsonObject.get("value");
