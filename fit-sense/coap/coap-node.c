@@ -217,14 +217,6 @@ PROCESS_THREAD(coap_node, ev, data)
         LOG_INFO("[!] intialization ended\n");
         STATE = STATE_INITIALIZED;
 
-        coap_activate_resource(&res_configuration, "actuator/configuration");
-        coap_activate_resource(&res_humidity, "actuator/humidity");
-        coap_activate_resource(&res_presence, "actuator/presence");
-        coap_activate_resource(&res_temperature, "actuator/temperature");
-        coap_activate_resource(&res_dehumidifier, "actuator/dehumidifier");
-        coap_activate_resource(&res_air_conditioner, "actuator/air_conditioner");
-        coap_activate_resource(&res_semaphore, "actuator/semaphore");
-
         LOG_INFO("[!] registration ... \n");
 
         // prepare the message to send at the application
@@ -257,6 +249,14 @@ PROCESS_THREAD(coap_node, ev, data)
     }
 
     LOG_INFO("[!] node online\n");
+
+    coap_activate_resource(&res_configuration, "actuator/configuration");
+    coap_activate_resource(&res_humidity, "actuator/humidity");
+    coap_activate_resource(&res_presence, "actuator/presence");
+    coap_activate_resource(&res_temperature, "actuator/temperature");
+    coap_activate_resource(&res_dehumidifier, "actuator/dehumidifier");
+    coap_activate_resource(&res_air_conditioner, "actuator/air_conditioner");
+    coap_activate_resource(&res_semaphore, "actuator/semaphore");
 
     // Set etimer for observing behavior
     set_humidity_etimer();

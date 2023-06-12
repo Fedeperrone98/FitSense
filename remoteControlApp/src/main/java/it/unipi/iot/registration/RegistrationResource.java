@@ -39,7 +39,7 @@ public class RegistrationResource extends CoapResource {
             String jsonString_response;
 
             // Check the existence of the area_id
-            if (!FitSenseDBHandler.getArea(area_id)){
+            if (!FitSenseDBHandler.checkAreaExistance(area_id)){
                 jsonString_response = "{\"status\": \"error_area\"}";
             }
             else {

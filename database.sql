@@ -11,16 +11,15 @@ CREATE TABLE IF NOT EXISTS configuration (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS area (
-    id int(11) NOT NULL,
+    id INT(11) AUTO_INCREMENT PRIMARY KEY
     name_area varchar(100) NOT NULL,
-    max_presence int(11) NOT NULL,
-    PRIMARY KEY(id)
+    max_presence int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO area (id, name_area, max_presence) VALUES
 (1, "weight room", 40),
 (2, "functional room", 30),
-(3, "swimming pool", 20),
+(3, "swimming pool", 20);
 
 
 CREATE TABLE IF NOT EXISTS measurement_temperature (

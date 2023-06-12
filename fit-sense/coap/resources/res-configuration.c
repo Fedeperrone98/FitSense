@@ -24,9 +24,9 @@ RESOURCE(
 );
 
 void save_config(int area_id, int node_id){
-  configuration.area_id = area_id;
-  configuration.node_id = node_id;
-  configuration.state = STATE_INITIALIZED;
+    configuration.area_id = area_id;
+    configuration.node_id = node_id;
+    configuration.state = STATE_INITIALIZED;
 }
 
 void config_error(){
