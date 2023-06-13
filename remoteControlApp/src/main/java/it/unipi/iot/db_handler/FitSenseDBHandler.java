@@ -54,7 +54,7 @@ public class FitSenseDBHandler {
                 // Execute the query
                 ResultSet resultSet = smartPoolPrepareStat.executeQuery();
                 while (resultSet.next()){
-                    result.add(resultSet.getString("address"));
+                    result.add(resultSet.getString("ipv6_address"));
                 }
 
             }
