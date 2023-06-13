@@ -6,7 +6,7 @@ USE iot_fitsense_db;
 CREATE TABLE IF NOT EXISTS configuration (
     area_id int(11) NOT NULL,
     node_id int(11) NOT NULL,
-    address varchar(100) NOT NULL,
+    ipv6_address varchar(100) NOT NULL,
     PRIMARY KEY (area_id, node_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

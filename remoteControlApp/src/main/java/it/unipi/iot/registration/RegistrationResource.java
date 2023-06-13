@@ -30,7 +30,7 @@ public class RegistrationResource extends CoapResource {
         String msg = exchange.getRequestText();
         String ipAddress = exchange.getSourceAddress().getHostAddress();
 
-        System.out.println("<  " + msg);
+        System.out.println(" <  " + msg);
 
         try {
             String jsonString_response;

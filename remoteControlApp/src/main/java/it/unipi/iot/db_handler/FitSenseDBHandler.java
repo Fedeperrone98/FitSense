@@ -84,7 +84,7 @@ public class FitSenseDBHandler {
     }
 
     public static void insertHumidity(int area_id, int node_id, int m_value) {
-        String insertQueryStatement = "INSERT INTO measurement_temperature (area_id, node_id, m_timestamp, m_value) VALUES (?, ?, CURRENT_TIMESTAMP, ?)";
+        String insertQueryStatement = "INSERT INTO measurement_humidity (area_id, node_id, m_timestamp, m_value) VALUES (?, ?, CURRENT_TIMESTAMP, ?)";
         try (Connection smartPoolConnection = makeDBConnection()
         ) {
             assert smartPoolConnection != null;
@@ -102,7 +102,7 @@ public class FitSenseDBHandler {
     }
 
     public static void insertPresence(int area_id, int node_id, int m_value) {
-        String insertQueryStatement = "INSERT INTO measurement_temperature (area_id, node_id, m_timestamp, m_value) VALUES (?, ?, CURRENT_TIMESTAMP, ?)";
+        String insertQueryStatement = "INSERT INTO measurement_presence (area_id, node_id, m_timestamp, m_value) VALUES (?, ?, CURRENT_TIMESTAMP, ?)";
         try (Connection smartPoolConnection = makeDBConnection()
         ) {
             assert smartPoolConnection != null;
@@ -121,7 +121,7 @@ public class FitSenseDBHandler {
     }
 
     public static void insertConfiguration(int area_id, int node_id, String address) {
-        String insertQueryStatement = "INSERT INTO measurement_temperature (area_id, node_id, address) VALUES (?, ?, ?)";
+        String insertQueryStatement = "INSERT INTO configuration (area_id, node_id, ipv6_address) VALUES (?, ?, ?)";
         try (Connection smartPoolConnection = makeDBConnection()
         ) {
             assert smartPoolConnection != null;

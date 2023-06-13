@@ -35,7 +35,8 @@ public class MyCoapClient extends CoapClient {
         System.out.println(" < " + responseText);
 
         JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        return (int) genreJsonObject.get("value");
+        long value_parsed = (long) genreJsonObject.get("value");
+        return (int) value_parsed;
     }
 
     public int getRequestHumidity(String ipAddress) throws ConnectorException, IOException, ParseException {
@@ -48,7 +49,8 @@ public class MyCoapClient extends CoapClient {
         System.out.println(" < " + responseText);
 
         JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        return (int) genreJsonObject.get("value");
+        long value_parsed = (long) genreJsonObject.get("value");
+        return (int) value_parsed;
     }
 
     public int getRequestPresence(String ipAddress) throws ConnectorException, IOException, ParseException {
@@ -61,7 +63,8 @@ public class MyCoapClient extends CoapClient {
         System.out.println(" < " + responseText);
 
         JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        return (int) genreJsonObject.get("value");
+        long value_parsed = (long) genreJsonObject.get("value");
+        return (int) value_parsed;
     }
 
     public String getRequestToAirConditioner(String ipAddress) throws ConnectorException, IOException, ParseException {
@@ -171,7 +174,7 @@ public class MyCoapClient extends CoapClient {
         JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
-            int value = (int) genreJsonObject.get("value");
+            long value = (long) genreJsonObject.get("value");
 
             String jsonString_response;
             String status = getRequestToAirConditioner(address);
@@ -236,7 +239,7 @@ public class MyCoapClient extends CoapClient {
         JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
-            int value = (int) genreJsonObject.get("value");
+            long value = (long) genreJsonObject.get("value");
 
             String jsonString_response;
             String status = getRequestToDehumidifier(address);
@@ -302,7 +305,7 @@ public class MyCoapClient extends CoapClient {
         JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
-            int value = (int) genreJsonObject.get("value");
+            long value = (long) genreJsonObject.get("value");
 
             String jsonString_response;
             String status = getRequestToSemaphore(address);
