@@ -6,6 +6,7 @@
 #include "coap-engine.h"
 #include "sys/log.h"
 #include "sys/etimer.h"
+#include <stdlib.h>
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
@@ -53,12 +54,12 @@ void set_humidity(char msg[]){
     int humidity;
     if(humidity_mem.dehumidifier_on == 0){
         // Generazione di un numero casuale compreso tra 0 e 100
-        random = random_rand() % 101;
+        random = rand() % 101;
         // Mapping del numero casuale nell'intervallo 20-80
         humidity = (random * 60 / 100) + 20;
     }else{
         // Generazione di un numero casuale compreso tra 0 e 100
-        random = random_rand() % 101;
+        random = rand() % 101;
         // Mapping del numero casuale nell'intervallo 20-25
         humidity = (random * 5 / 100) + 20;
     }
@@ -80,7 +81,7 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 {
     char reply[MSG_SIZE];
 
-    LOG_INFO(" <  GET actuator/humidity\n")
+    LOG_INFO(" <  GET actuator/humidity\n");
     set_humidity(reply);
     
     coap_set_header_content_format(response, TEXT_PLAIN);

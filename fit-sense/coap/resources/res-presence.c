@@ -6,6 +6,7 @@
 #include "coap-engine.h"
 #include "sys/log.h"
 #include "sys/etimer.h"
+#include <stdlib.h>
 
 #define MAX_CAPACITY 50
 
@@ -45,7 +46,7 @@ void restart_presence_timer(){
 }
 
 void set_presence(char msg[]){
-    int presence = random_rand() % MAX_CAPACITY;
+    int presence = rand() % MAX_CAPACITY;
 
     presence_mem.value = presence;
 
@@ -65,7 +66,7 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 
     char reply[MSG_SIZE];
 
-    LOG_INFO(" <  GET actuator/presence\n")
+    LOG_INFO(" <  GET actuator/presence\n");
     set_presence(reply);
     
     coap_set_header_content_format(response, TEXT_PLAIN);

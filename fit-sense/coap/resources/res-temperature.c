@@ -6,6 +6,7 @@
 #include "coap-engine.h"
 #include "sys/log.h"
 #include "sys/etimer.h"
+#include <stdlib.h>
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
@@ -51,9 +52,9 @@ void set_air_conditioner_status(bool on){
 void set_temperature(char msg[]){
     int temperature;
     if(temperature_mem.air_conditioner_on == false){
-        temperature = (5 + random_rand()%35);
+        temperature = (5 + rand()%35);
     }else {
-        temperature = (19 + random_rand()%4);
+        temperature = (19 + rand()%4);
     }
     temperature_mem.value = temperature;
 
@@ -72,7 +73,7 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 {
     char reply[MSG_SIZE];
 
-    LOG_INFO(" <  GET actuator/temperature\n")
+    LOG_INFO(" <  GET actuator/temperature\n");
     set_temperature(reply);
     
     coap_set_header_content_format(response, TEXT_PLAIN);

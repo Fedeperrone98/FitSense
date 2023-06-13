@@ -15,5 +15,7 @@
 
 void parse_json(char json[], int n_arguments, char arguments[][100]);
 void set_air_conditioner_status(bool on);
+void set_dehumidifier_status(bool on);
+void set_air_conditioner_status(bool on);
 
 #endif

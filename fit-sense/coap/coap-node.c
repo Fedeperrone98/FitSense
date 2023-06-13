@@ -126,7 +126,10 @@ void client_chunk_handler(coap_message_t *response){
         LOG_INFO("[-] node with the same id already exists\n");
         STATE = STATE_ERROR;
         return;
-    }    
+    } else {
+        LOG_INFO("[-] server returns an unknown message\n");
+        STATE = STATE_ERROR;
+    }
 
 }
 
@@ -149,16 +152,16 @@ PROCESS_THREAD(coap_node, ev, data)
     etimer_set(&led_etimer,0.5 * CLOCK_SECOND);
     leds_single_on(LEDS_RED);
 
-    btn_count = 0;    
-    area_id_setted = false;
-    area_id = 0;
-    node_id = 0;
-
-    STATE=STATE_ERROR;
-
     // Ask more times the Ids until they are both ok
     while(STATE==STATE_ERROR)
     {
+        btn_count = 0;    
+        area_id_setted = false;
+        area_id = 0;
+        node_id = 0;
+
+        STATE=STATE_ERROR;
+        
         while(1) {
             PROCESS_YIELD();
 

@@ -36,7 +36,7 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 {
     char reply[MSG_SIZE];
 
-    LOG_INFO(" <  GET actuator/semaphore\n")
+    LOG_INFO(" <  GET actuator/semaphore\n");
     send_semaphore_status(reply);
     
     coap_set_header_content_format(response, TEXT_PLAIN);

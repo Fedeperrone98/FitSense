@@ -32,21 +32,21 @@ public class RegistrationResource extends CoapResource {
 
         System.out.println("<  " + msg);
 
-        JSONObject genreJsonObject;
         try {
-            // Obtain information from json message
-            genreJsonObject = (JSONObject) JSONValue.parseWithException(msg);
-            int node_id = (int) genreJsonObject.get("node_id");
-            int area_id = (int) genreJsonObject.get("area_id");
             String jsonString_response;
 
+            // Obtain information from json message
+            JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(msg);
+            long node_id = (long) genreJsonObject.get("node_id");
+            long area_id = (long) genreJsonObject.get("area_id");
+
             // Check the existence of the area_id
-            if (!FitSenseDBHandler.checkAreaExistence(area_id)){
+            if (!FitSenseDBHandler.checkAreaExistence((int)area_id)){
                 jsonString_response = "{\"status\": \"error_area\"}";
             }
             else {
                 // Check the presence of a node characterized with the same Ids
-                if(FitSenseDBHandler.checkNodeExistence(area_id, node_id)){
+                if(FitSenseDBHandler.checkNodeExistence((int)area_id, (int) node_id)){
                     jsonString_response = "{\"status\": \"error_id\"}";
                 }
                 else{
@@ -54,13 +54,13 @@ public class RegistrationResource extends CoapResource {
 
                     System.out.println("[!] Insertion node in the configuration table ... ");
 
-                    FitSenseDBHandler.insertConfiguration(area_id, node_id, ipAddress);
+                    FitSenseDBHandler.insertConfiguration((int)area_id, (int)node_id, ipAddress);
 
                     System.out.println("[!] Finish insertion node");
 
                     coapClient.startTemperatureObservation(ipAddress);
                     coapClient.startHumidityObservation(ipAddress);
-                    coapClient.startPresenceObservation(ipAddress, area_id);
+                    coapClient.startPresenceObservation(ipAddress, (int)area_id);
                 }
             }
 
@@ -72,6 +72,7 @@ public class RegistrationResource extends CoapResource {
 
         } catch (ParseException e) {
             e.printStackTrace();
+            System.out.println("[-] error during message parsing");
         }
 
     }
