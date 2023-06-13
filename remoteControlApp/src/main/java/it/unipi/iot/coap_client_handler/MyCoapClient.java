@@ -148,7 +148,7 @@ public class MyCoapClient extends CoapClient {
         }
     }
 
-    public void startTemperatureObservation(String ipAddress) {
+    public void startTemperatureObservation(final String ipAddress) {
         CoapClient clientTemperatureObs = new CoapClient("coap://[" + ipAddress + "]/actuator/temperature");
         clientAirConditioner = new CoapClient("coap://[" + ipAddress + "]/actuator/air_conditioner");
         clientTemperatureObs.observe(
@@ -204,12 +204,16 @@ public class MyCoapClient extends CoapClient {
                     System.out.println("[-] PUT request failed");
                 }
             }
-        } catch (ParseException | ConnectorException | IOException e) {
+        } catch (ParseException e){
+            throw new RuntimeException(e);
+        } catch( ConnectorException e){
+            throw new RuntimeException(e);
+        } catch( IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void startHumidityObservation(String ipAddress) {
+    public void startHumidityObservation(final String ipAddress) {
         CoapClient clientHumidityObs = new CoapClient("coap://[" + ipAddress + "]/actuator/humidity");
         clientDehumidifier = new CoapClient("coap://[" + ipAddress + "]/actuator/dehumidifier");
         clientHumidityObs.observe(
@@ -266,12 +270,16 @@ public class MyCoapClient extends CoapClient {
                 }
             }
 
-        } catch (ParseException | ConnectorException | IOException e) {
+        } catch (ParseException e){
+            throw new RuntimeException(e);
+        } catch( ConnectorException e){
+            throw new RuntimeException(e);
+        } catch( IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void startPresenceObservation(String ipAddress, int area_id) {
+    public void startPresenceObservation(final String ipAddress, final int area_id) {
         CoapClient clientPresenceObs = new CoapClient("coap://[" + ipAddress + "]/actuator/presence");
         clientSemaphore = new CoapClient("coap://[" + ipAddress + "]/actuator/semaphore");
         clientPresenceObs.observe(
@@ -329,7 +337,11 @@ public class MyCoapClient extends CoapClient {
                 }
             }
 
-        } catch (ParseException | ConnectorException | IOException e) {
+        } catch (ParseException e){
+            throw new RuntimeException(e);
+        } catch( ConnectorException e){
+            throw new RuntimeException(e);
+        } catch( IOException e) {
             throw new RuntimeException(e);
         }
     }

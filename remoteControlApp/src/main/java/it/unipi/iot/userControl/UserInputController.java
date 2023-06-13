@@ -49,9 +49,13 @@ public class UserInputController implements Runnable{
             try {
                 int command = Integer.parseInt(reader.readLine());
 
+                ResultSet result;
+                int area_id;
+                int max_presence;
+
                 switch (command) {
-                    case 1 -> { // view area
-                        ResultSet result = FitSenseDBHandler.getAreas();
+                    case 1:  // view area
+                        result = FitSenseDBHandler.getAreas();
                         if (result != null) {
                             while (result.next()) {
                                 System.out.println("id: " + result.getInt("id") +
@@ -62,9 +66,10 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There are no areas");
                         }
-                    }
-                    case 2 -> { // view configurations
-                        ResultSet result = FitSenseDBHandler.getConfigurations();
+                        break;
+
+                    case 2: // view configurations
+                        result = FitSenseDBHandler.getConfigurations();
                         if (result != null) {
                             while (result.next()) {
                                 System.out.println("area_id: " + result.getInt("area_id") +
@@ -75,49 +80,54 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There are no actuators");
                         }
-                    }
-                    case 3 -> { // view last temperature per area
+                        break;
+
+                    case 3 : // view last temperature per area
                         Map<Integer, Integer> lastTemperature = FitSenseDBHandler.getLastTemperature();
                         for (Map.Entry<Integer, Integer> entry : lastTemperature.entrySet()) {
                             System.out.println("area_id: " + entry.getKey() +
                                     "| value: " + entry.getValue());
                         }
-                    }
-                    case 4 -> {// view last humidity per area
+                        break;
+
+                    case 4: // view last humidity per area
                         Map<Integer, Integer> lastHumidity = FitSenseDBHandler.getLastHumidity();
                         for (Map.Entry<Integer, Integer> entry : lastHumidity.entrySet()) {
                             System.out.println("area_id: " + entry.getKey() +
                                     "| value: " + entry.getValue());
                         }
-                    }
-                    case 5 -> { // view last presence per area
+                        break;
+                    case 5:  // view last presence per area
                         Map<Integer, Integer> lastPresence = FitSenseDBHandler.getLastPresence();
                         for (Map.Entry<Integer, Integer> entry : lastPresence.entrySet()) {
                             System.out.println("area_id: " + entry.getKey() +
                                     "| value: " + entry.getValue());
                         }
-                    }
-                    case 6 -> { // add area
+                        break;
+
+                    case 6:  // add area
                         System.out.println("Insert name area:");
                         String name = reader.readLine();
                         System.out.println("Insert max_presence area:");
-                        int max_presence = Integer.parseInt(reader.readLine());
+                        max_presence = Integer.parseInt(reader.readLine());
                         FitSenseDBHandler.insertArea(name, max_presence);
-                    }
-                    case 7 -> { // update area max presence
+                        break;
+
+                    case 7:  // update area max presence
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             System.out.println("Insert new max_presence area:");
-                            int max_presence = Integer.parseInt(reader.readLine());
+                            max_presence = Integer.parseInt(reader.readLine());
                             FitSenseDBHandler.updateMaxPresenceArea(area_id, max_presence);
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 8 -> { // get current temperature
+                        break;
+
+                    case 8:  // get current temperature
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -129,10 +139,11 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 9 -> { // get current humidity
+                        break;
+
+                    case 9:  // get current humidity
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -144,10 +155,11 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 10 -> {  // get current presence
+                        break;
+
+                    case 10:   // get current presence
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -159,10 +171,11 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 11 -> { // turn on air conditioner
+                        break;
+
+                    case 11:  // turn on air conditioner
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -178,10 +191,11 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 12 -> {// turn off air-conditioner
+                        break;
+
+                    case 12: // turn off air-conditioner
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -197,10 +211,11 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 13 -> { // turn on dehumidifier
+                        break;
+
+                    case 13:  // turn on dehumidifier
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -216,10 +231,11 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 14 -> { // turn off dehumidifier
+                        break;
+
+                    case 14:  // turn off dehumidifier
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -235,10 +251,11 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 15 -> { // turn on semaphore
+                        break;
+
+                    case 15:  // turn on semaphore
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -254,10 +271,11 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 16 -> { // turn off semaphore
+                        break;
+
+                    case 16:  // turn off semaphore
                         System.out.println("Insert area id:");
-                        int area_id = Integer.parseInt(reader.readLine());
+                        area_id = Integer.parseInt(reader.readLine());
                         if (FitSenseDBHandler.checkAreaExistence(area_id)) {
                             ArrayList<String> addresses = FitSenseDBHandler.getActuatorFromAreaID(area_id);
                             if (addresses.isEmpty()) {
@@ -273,19 +291,26 @@ public class UserInputController implements Runnable{
                         } else {
                             System.out.println("There is no area with this id");
                         }
-                    }
-                    case 17 -> //exit
+                        break;
+
+                    case 17: //exit
                             loop = false;
-                    default -> System.out.println("You must insert an integer between 1 and 17");
+                            break;
+                    default:
+                        System.out.println("You must insert an integer between 1 and 17");
+                        break;
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("You must insert an integer");
-            } catch (SQLException | ConnectorException | ParseException e) {
+            } catch (SQLException e){
+                throw new RuntimeException(e);
+            } catch (ConnectorException e){
+                throw new RuntimeException(e);
+            } catch (ParseException e){
+                throw new RuntimeException(e);
+            } catch(IOException e) {
                 throw new RuntimeException(e);
             }
-        }
+	}
     }
 
     @Override

@@ -4,11 +4,13 @@
 #include <string.h>
 #include <stdio.h>
 #include "coap-engine.h"
+#include "sys/log.h"
+#include "os/dev/leds.h"
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 
-static char[4] mode = "off";
+static char mode[] = "off";
 
 RESOURCE(
     res_air_conditioner,
@@ -34,7 +36,7 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 {
     char reply[MSG_SIZE];
 
-    LOG_INFO(" <  GET actuator/air-conditioner\n")
+    LOG_INFO(" <  GET actuator/air-conditioner\n");
     send_air_conditioner_status(reply);
     
     coap_set_header_content_format(response, TEXT_PLAIN);
@@ -60,7 +62,7 @@ res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
     parse_json(msg, n_arguments, arguments );
 
     strcpy(mode, arguments[0]);
-    send_dehumidifier_status(reply);
+    send_air_conditioner_status(reply);
 
     coap_set_header_content_format(response, TEXT_PLAIN);
     coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "%s", reply));

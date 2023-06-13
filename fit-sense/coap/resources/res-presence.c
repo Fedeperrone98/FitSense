@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "coap-engine.h"
+#include "sys/log.h"
+#include "sys/etimer.h"
 
 #define MAX_CAPACITY 50
 
@@ -12,7 +14,7 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
 static void res_event_handler(void);
 
 static struct presence_str{
-    int value = 0;
+    int value;
     struct etimer presence_etimer;
 }presence_mem;
 
@@ -25,6 +27,10 @@ EVENT_RESOURCE(
     NULL,
     res_event_handler
 );
+
+void initialize_presence_str(){
+    presence_mem.value = 0;
+}
 
 void set_presence_etimer(){
   etimer_set(&presence_mem.presence_etimer, NOTIFICATION_TIME_PRESENCE * CLOCK_SECOND);

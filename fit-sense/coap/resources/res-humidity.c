@@ -4,14 +4,16 @@
 #include <string.h>
 #include <stdio.h>
 #include "coap-engine.h"
+#include "sys/log.h"
+#include "sys/etimer.h"
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_event_handler(void);
 
 static struct humidity_str{
-    int value = 0;
-    bool dehumidifier_on = false;
+    int value;
+    bool dehumidifier_on;
     struct etimer humidity_etimer;
 }humidity_mem;
 
@@ -39,6 +41,11 @@ void restart_humidity_timer(){
 
 void set_dehumidifier_status(bool on){
     humidity_mem.dehumidifier_on = on;
+}
+
+void initialize_humidity_str(){
+    humidity_mem.value = 0;
+    humidity_mem.dehumidifier_on = false;
 }
 
 void set_humidity(char msg[]){

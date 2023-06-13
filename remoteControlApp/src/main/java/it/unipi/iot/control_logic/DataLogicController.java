@@ -14,6 +14,10 @@ public class DataLogicController implements Runnable {
     public static void temperatureController() throws ConnectorException, IOException, ParseException {
         Map<Integer, Integer> valuePerArea = FitSenseDBHandler.getLastTemperature();
 
+        if(valuePerArea.isEmpty()){
+            System.out.println("[!] No temperature measurement found");
+        }
+
         for (Map.Entry<Integer, Integer> entry : valuePerArea.entrySet()) {
             int area_id = entry.getKey();
             int value = entry.getValue();
@@ -39,6 +43,9 @@ public class DataLogicController implements Runnable {
     public static void humidityController() throws ConnectorException, IOException, ParseException {
         Map<Integer, Integer> valuePerArea = FitSenseDBHandler.getLastHumidity();
 
+        if(valuePerArea.isEmpty()){
+            System.out.println("[!] No humidity measurement found");
+        }
         for (Map.Entry<Integer, Integer> entry : valuePerArea.entrySet()) {
             int area_id = entry.getKey();
             int value = entry.getValue();
@@ -64,6 +71,9 @@ public class DataLogicController implements Runnable {
     public static void presenceController() throws ConnectorException, IOException, ParseException {
         Map<Integer, Integer> valuePerArea = FitSenseDBHandler.getLastPresence();
 
+        if(valuePerArea.isEmpty()){
+            System.out.println("[!] No presence measurement found");
+        }
         for (Map.Entry<Integer, Integer> entry : valuePerArea.entrySet()) {
             int area_id = entry.getKey();
             int value = entry.getValue();
@@ -90,10 +100,17 @@ public class DataLogicController implements Runnable {
     @Override
     public void run() {
         try {
+            System.out.println("[!] Start monitoring temperature measurement...");
             temperatureController();
+            System.out.println("[!] Start monitoring humidity measurement...");
             humidityController();
+            System.out.println("[!] Start monitoring presence measurement...");
             presenceController();
-        } catch (ConnectorException | IOException | ParseException e) {
+        } catch (ConnectorException e){
+            throw new RuntimeException(e);
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        } catch(ParseException e) {
             throw new RuntimeException(e);
         }
 

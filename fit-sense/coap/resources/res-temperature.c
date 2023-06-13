@@ -4,14 +4,16 @@
 #include <string.h>
 #include <stdio.h>
 #include "coap-engine.h"
+#include "sys/log.h"
+#include "sys/etimer.h"
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_event_handler(void);
 
 static struct temperature_str{
-    int value = 0;
-    bool air_conditioner_on = false;
+    int value;
+    bool air_conditioner_on;
     struct etimer temperature_etimer;
 }temperature_mem;
 
@@ -24,6 +26,11 @@ EVENT_RESOURCE(
     NULL,
     res_event_handler
 );
+
+void initialize_temperature_str(){
+    temperature_mem.value = 0;
+    temperature_mem.air_conditioner_on = false;
+}
 
 void set_temperature_etimer(){
   etimer_set(&temperature_mem.temperature_etimer, NOTIFICATION_TIME_TEMPERATURE * CLOCK_SECOND);

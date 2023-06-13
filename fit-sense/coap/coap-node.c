@@ -3,6 +3,10 @@
 #include <string.h>
 #include "contiki.h"
 #include "coap-engine.h"
+#include "os/dev/leds.h"
+#include "sys/etimer.h"
+#include "os/dev/button-hal.h"
+#include "coap-blocking-api.h"
 
 /* Log configuration */
 #include "sys/log.h"
@@ -16,6 +20,10 @@
 #define CLOCK_MINUTE        CLOCK_SECOND * 60
 #define MSG_SIZE            200
 
+void save_config(int area_id, int node_id);
+void initialize_humidity_str();
+void initialize_temperature_str();
+void initialize_presence_str();
 void set_humidity_etimer();
 void set_temperature_etimer();
 void set_presence_etimer();
@@ -257,6 +265,10 @@ PROCESS_THREAD(coap_node, ev, data)
     coap_activate_resource(&res_dehumidifier, "actuator/dehumidifier");
     coap_activate_resource(&res_air_conditioner, "actuator/air_conditioner");
     coap_activate_resource(&res_semaphore, "actuator/semaphore");
+
+    initialize_humidity_str();
+    initialize_temperature_str();
+    initialize_presence_str();
 
     // Set etimer for observing behavior
     set_humidity_etimer();
