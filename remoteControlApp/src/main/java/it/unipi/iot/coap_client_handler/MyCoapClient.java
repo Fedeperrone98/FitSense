@@ -25,130 +25,238 @@ public class MyCoapClient extends CoapClient {
         return instance;
     }
 
-    public int getRequestTemperature(String ipAddress) throws ConnectorException, IOException, ParseException {
+    public int getRequestTemperature(String ipAddress) {
         CoapClient temperature = new CoapClient("coap://[" + ipAddress + "]/actuator/temperature");
 
         // Send the get request to temperature sensor
         System.out.println("[+] GET request to temperature sensor");
-        CoapResponse temperatureResponse = temperature.get();
-        String responseText = temperatureResponse.getResponseText();
-        System.out.println(" < " + responseText);
 
-        JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        long value_parsed = (long) genreJsonObject.get("value");
-        return (int) value_parsed;
+        try {
+            CoapResponse temperatureResponse = temperature.get();
+            String responseText = temperatureResponse.getResponseText();
+            System.out.println(" <  " + responseText);
+
+            JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+            long value_parsed = (long) genreJsonObject.get("value");
+            return (int) value_parsed;
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public int getRequestHumidity(String ipAddress) throws ConnectorException, IOException, ParseException {
+    public int getRequestHumidity(String ipAddress) {
         CoapClient humidity = new CoapClient("coap://[" + ipAddress + "]/actuator/humidity");
 
         // Send the get request to the humidity sensor
         System.out.println("[+] GET request to humidity sensor");
-        CoapResponse humidityResponse = humidity.get();
-        String responseText = humidityResponse.getResponseText();
-        System.out.println(" < " + responseText);
 
-        JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        long value_parsed = (long) genreJsonObject.get("value");
-        return (int) value_parsed;
+        try {
+            CoapResponse humidityResponse = humidity.get();
+            String responseText = humidityResponse.getResponseText();
+            System.out.println(" <  " + responseText);
+
+            JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+            long value_parsed = (long) genreJsonObject.get("value");
+            return (int) value_parsed;
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public int getRequestPresence(String ipAddress) throws ConnectorException, IOException, ParseException {
+    public int getRequestPresence(String ipAddress) {
         CoapClient presence = new CoapClient("coap://[" + ipAddress + "]/actuator/presence");
 
         // Send the get request to the presence sensor
         System.out.println("[+] GET request to presence sensor");
-        CoapResponse presenceResponse = presence.get();
-        String responseText = presenceResponse.getResponseText();
-        System.out.println(" < " + responseText);
 
-        JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        long value_parsed = (long) genreJsonObject.get("value");
-        return (int) value_parsed;
+        try {
+            CoapResponse presenceResponse = presence.get();
+            String responseText = presenceResponse.getResponseText();
+            System.out.println(" <  " + responseText);
+
+            JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+            long value_parsed = (long) genreJsonObject.get("value");
+            return (int) value_parsed;
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public String getRequestToAirConditioner(String ipAddress) throws ConnectorException, IOException, ParseException {
+    public String getRequestToAirConditioner(String ipAddress) {
         CoapClient clientAirConditioner = new CoapClient("coap://[" + ipAddress + "]/actuator/air_conditioner");
-
         // Send the get request to the air conditioner
         System.out.println("[+] GET request to air conditioner");
-        CoapResponse airConditionerResponse = clientAirConditioner.get();
-        String responseText = airConditionerResponse.getResponseText();
-        System.out.println(" < " + responseText);
 
-        JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        return (String) genreJsonObject.get("value");
+        try {
+            System.out.println("dentro il try");
+            CoapResponse airConditionerResponse = clientAirConditioner.get();
+            System.out.println("ho fatto la get");
+            String responseText = airConditionerResponse.getResponseText();
+            System.out.println(" <  " + responseText);
+
+            JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+            return (String) genreJsonObject.get("value");
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public void putCommandToAirConditioner(String ipAddress, String command) throws ConnectorException, IOException {
+    public void putCommandToAirConditioner(String ipAddress, String command) {
         CoapClient clientAirConditioner = new CoapClient("coap://[" + ipAddress + "]/actuator/air_conditioner");
 
         // Send the PUT request to handle the air conditioner
-        CoapResponse airConditionerResponse = clientAirConditioner.put(command, MediaTypeRegistry.TEXT_PLAIN);
-        System.out.println(" > " + command);
+        try {
+            CoapResponse airConditionerResponse = clientAirConditioner.put(command, MediaTypeRegistry.TEXT_PLAIN);
+            System.out.println(" >  " + command);
 
-        // Check the response
-        if (airConditionerResponse.isSuccess()) {
-            System.out.println("[+] PUT request succeeded");
-        } else {
-            System.out.println("[-] PUT request failed");
+            // Check the response
+            if (airConditionerResponse.isSuccess()) {
+                System.out.println("[+] PUT request succeeded");
+            } else {
+                System.out.println("[-] PUT request failed");
+            }
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+
     }
 
-    public String getRequestToDehumidifier(String ipAddress) throws ConnectorException, IOException, ParseException {
+    public String getRequestToDehumidifier(String ipAddress) {
         CoapClient clientDehumidifier = new CoapClient("coap://[" + ipAddress + "]/actuator/dehumidifier");
 
         // Send the get request to the dehumidifier
         System.out.println("[+] GET request to dehumidifier");
-        CoapResponse airConditionerResponse = clientDehumidifier.get();
-        String responseText = airConditionerResponse.getResponseText();
-        System.out.println(" < " + responseText);
+        try {
+            System.out.println("dentro il try");
+            CoapResponse dehumidifierResponse = clientDehumidifier.get();
+            System.out.println("ho fatto la get");
+            String responseText = dehumidifierResponse.getResponseText();
+            System.out.println(" <  " + responseText);
 
-        JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        return (String) genreJsonObject.get("value");
-    }
+            JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+            return (String) genreJsonObject.get("value");
 
-    public void putCommandToDehumidifier(String ipAddress, String command) throws ConnectorException, IOException {
-        CoapClient clientDehumidifier = new CoapClient("coap://[" + ipAddress + "]/actuator/dehumidifier");
-
-        // Send the PUT request to handle the dehumidifier
-        CoapResponse airConditionerResponse = clientDehumidifier.put(command, MediaTypeRegistry.TEXT_PLAIN);
-        System.out.println(" > " + command);
-
-        // Check the response
-        if (airConditionerResponse.isSuccess()) {
-            System.out.println("[+] PUT request succeeded");
-        } else {
-            System.out.println("[-] PUT request failed");
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    public String getRequestToSemaphore(String ipAddress) throws ConnectorException, IOException, ParseException {
+    public void putCommandToDehumidifier(String ipAddress, String command) {
+        CoapClient clientDehumidifier = new CoapClient("coap://[" + ipAddress + "]/actuator/dehumidifier");
+
+        // Send the PUT request to handle the dehumidifier
+        try {
+            CoapResponse dehumidifierResponse = clientDehumidifier.put(command, MediaTypeRegistry.TEXT_PLAIN);
+            System.out.println(" >  " + command);
+
+            // Check the response
+            if (dehumidifierResponse.isSuccess()) {
+                System.out.println("[+] PUT request succeeded");
+            } else {
+                System.out.println("[-] PUT request failed");
+            }
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public String getRequestToSemaphore(String ipAddress)  {
         CoapClient clientSemaphore = new CoapClient("coap://[" + ipAddress + "]/actuator/semaphore");
 
         // Send the get request to the semaphore
         System.out.println("[+] GET request to semaphore");
-        CoapResponse airConditionerResponse = clientSemaphore.get();
-        String responseText = airConditionerResponse.getResponseText();
-        System.out.println(" < " + responseText);
+        try {
+            System.out.println("dentro il try");
+            CoapResponse semaphoreResponse = clientSemaphore.get();
+            System.out.println("ho fatto la get");
+            String responseText = semaphoreResponse.getResponseText();
+            System.out.println(" <  " + responseText);
 
-        JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
-        return (String) genreJsonObject.get("value");
+            JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+            return (String) genreJsonObject.get("value");
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public void putCommandToSemaphore(String ipAddress, String command) throws ConnectorException, IOException {
+    public void putCommandToSemaphore(String ipAddress, String command)  {
         CoapClient clientSemaphore = new CoapClient("coap://[" + ipAddress + "]/actuator/semaphore");
 
         // Send the PUT request to handle the semaphore
-        CoapResponse airConditionerResponse = clientSemaphore.put(command, MediaTypeRegistry.TEXT_PLAIN);
-        System.out.println(" > " + command);
+        try {
+            CoapResponse semaphoreResponse = clientSemaphore.put(command, MediaTypeRegistry.TEXT_PLAIN);
+            System.out.println(" >  " + command);
 
-        // Check the response
-        if (airConditionerResponse.isSuccess()) {
-            System.out.println("[+] PUT request succeeded");
-        } else {
-            System.out.println("[-] PUT request failed");
+            // Check the response
+            if (semaphoreResponse.isSuccess()) {
+                System.out.println("[+] PUT request succeeded");
+            } else {
+                System.out.println("[-] PUT request failed");
+            }
+        } catch (ConnectorException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+
     }
 
     public void startTemperatureObservation(final String ipAddress) {
@@ -170,7 +278,7 @@ public class MyCoapClient extends CoapClient {
     public void handleTemperatureResponse(CoapResponse response, String address){
         System.out.println("[!] Receiving temperature notification");
         String responseString = new String(response.getPayload());
-        System.out.println(" < " + responseString);
+        System.out.println(" <  " + responseString);
         JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
@@ -183,8 +291,9 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"on\"}";
 
                 // Send the PUT request to handle the air conditioner
+                System.out.println("[!] Sending PUT request to air conditioner");
+                System.out.println(" >  " + jsonString_response);
                 CoapResponse airConditionerResponse = clientAirConditioner.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-                System.out.println(" > " + jsonString_response);
 
                 // Check the response
                 if (airConditionerResponse.isSuccess()) {
@@ -197,8 +306,9 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"off\"}";
 
                 // Send the PUT request to handle the air conditioner
+                System.out.println("[!] Sending PUT request to air conditioner");
+                System.out.println(" >  " + jsonString_response);
                 CoapResponse airConditionerResponse = clientAirConditioner.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-                System.out.println(" > " + jsonString_response);
 
                 // Check the response
                 if (airConditionerResponse.isSuccess()) {
@@ -208,10 +318,13 @@ public class MyCoapClient extends CoapClient {
                 }
             }
         } catch (ParseException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } catch( ConnectorException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } catch( IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -235,7 +348,7 @@ public class MyCoapClient extends CoapClient {
     public void handleHumidityResponse(CoapResponse response, String address) {
         System.out.println("[!] Receiving humidity notification");
         String responseString = new String(response.getPayload());
-        System.out.println(" < " + responseString);
+        System.out.println(" <  " + responseString);
         JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
@@ -248,8 +361,9 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"on\"}";
 
                 // Send the PUT request to handle the dehumidifier
+                System.out.println("[!] Sending PUT request to dehumidifier");
+                System.out.println(" >  " + jsonString_response);
                 CoapResponse dehumidifierResponse = clientDehumidifier.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-                System.out.println(" > " + jsonString_response);
 
                 // Check the response
                 if (dehumidifierResponse.isSuccess()) {
@@ -262,8 +376,9 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"off\"}";
 
                 // Send the PUT request to handle the dehumidifier
+                System.out.println("[!] Sending PUT request to dehumidifier");
+                System.out.println(" >  " + jsonString_response);
                 CoapResponse dehumidifierResponse = clientDehumidifier.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-                System.out.println(" > " + jsonString_response);
 
                 // Check the response
                 if (dehumidifierResponse.isSuccess()) {
@@ -274,10 +389,13 @@ public class MyCoapClient extends CoapClient {
             }
 
         } catch (ParseException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } catch( ConnectorException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } catch( IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -301,7 +419,7 @@ public class MyCoapClient extends CoapClient {
     public void handlePresenceResponse(CoapResponse response, int area_id, String address) {
         System.out.println("[!] Receiving presence notification");
         String responseString = new String(response.getPayload());
-        System.out.println(" < " + responseString);
+        System.out.println(" <  " + responseString);
         JSONObject genreJsonObject;
         try {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
@@ -315,8 +433,9 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"on\"}";
 
                 // Send the PUT request to handle the semaphore
+                System.out.println("[!] Sending PUT request to semaphore");
+                System.out.println(" >  " + jsonString_response);
                 CoapResponse semaphoreResponse = clientSemaphore.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-                System.out.println(" > " + jsonString_response);
 
                 // Check the response
                 if (semaphoreResponse.isSuccess()) {
@@ -329,8 +448,9 @@ public class MyCoapClient extends CoapClient {
                 jsonString_response = "{\"mode\": \"off\"}";
 
                 // Send the PUT request to handle the semaphore
+                System.out.println("[!] Sending PUT request to semaphore");
+                System.out.println(" >  " + jsonString_response);
                 CoapResponse semaphoreResponse = clientSemaphore.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-                System.out.println(" > " + jsonString_response);
 
                 // Check the response
                 if (semaphoreResponse.isSuccess()) {
@@ -341,10 +461,13 @@ public class MyCoapClient extends CoapClient {
             }
 
         } catch (ParseException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } catch( ConnectorException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } catch( IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

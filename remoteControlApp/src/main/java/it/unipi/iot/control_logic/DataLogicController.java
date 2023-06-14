@@ -107,10 +107,13 @@ public class DataLogicController implements Runnable {
             System.out.println("[!] Start monitoring presence measurement...");
             presenceController();
         } catch (ConnectorException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } catch (IOException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } catch(ParseException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 

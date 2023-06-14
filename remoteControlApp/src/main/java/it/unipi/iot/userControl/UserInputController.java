@@ -2,9 +2,6 @@ package it.unipi.iot.userControl;
 
 import it.unipi.iot.coap_client_handler.MyCoapClient;
 import it.unipi.iot.db_handler.FitSenseDBHandler;
-import org.eclipse.californium.elements.exception.ConnectorException;
-import org.json.simple.parser.ParseException;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -302,12 +299,10 @@ public class UserInputController implements Runnable{
                 }
 
             } catch (SQLException e){
-                throw new RuntimeException(e);
-            } catch (ConnectorException e){
-                throw new RuntimeException(e);
-            } catch (ParseException e){
+                e.printStackTrace();
                 throw new RuntimeException(e);
             } catch(IOException e) {
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
 	}

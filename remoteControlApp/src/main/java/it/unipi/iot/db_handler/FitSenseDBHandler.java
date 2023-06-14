@@ -275,8 +275,7 @@ public class FitSenseDBHandler {
         try (Connection smartPoolConnection = makeDBConnection()
         ) {
             assert smartPoolConnection != null;
-            try (PreparedStatement smartPoolPrepareStat = smartPoolConnection.prepareStatement(selectQueryStatement1)
-            ) {
+            try (PreparedStatement smartPoolPrepareStat = smartPoolConnection.prepareStatement(selectQueryStatement1)) {
                 // Execute the query
                 ResultSet resultSet = smartPoolPrepareStat.executeQuery();
 
@@ -284,11 +283,9 @@ public class FitSenseDBHandler {
                     int currentAreaId = resultSet.getInt("area_id");
                     Timestamp maxTime = resultSet.getTimestamp("maxTime");
                     String selectQueryStatement2 = "SELECT m_value FROM measurement_temperature WHERE area_id=? and m_timestamp=?";
-                    try (Connection smartPoolConnection2 = makeDBConnection()
-                    ) {
+                    try (Connection smartPoolConnection2 = makeDBConnection()) {
                         assert smartPoolConnection2 != null;
-                        try (PreparedStatement smartPoolPrepareStat2 = smartPoolConnection2.prepareStatement(selectQueryStatement2)
-                        ) {
+                        try (PreparedStatement smartPoolPrepareStat2 = smartPoolConnection2.prepareStatement(selectQueryStatement2)) {
                             smartPoolPrepareStat2.setInt(1, currentAreaId);
                             smartPoolPrepareStat2.setTimestamp(2, maxTime);
                             // Execute the query
@@ -386,5 +383,17 @@ public class FitSenseDBHandler {
         }
 
         return result;
+    }
+
+    public static void deleteFromConfiguration() {
+        String deleteQueryStatement = "DELETE FROM configuration";
+        try (Connection smartPoolConnection = makeDBConnection()) {
+            assert smartPoolConnection != null;
+            try (PreparedStatement smartPoolPrepareStat = smartPoolConnection.prepareStatement(deleteQueryStatement)) {
+                smartPoolPrepareStat.executeUpdate();
+            }
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+        }
     }
 }

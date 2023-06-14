@@ -57,10 +57,6 @@ public class RegistrationResource extends CoapResource {
                     FitSenseDBHandler.insertConfiguration((int)area_id, (int)node_id, ipAddress);
 
                     System.out.println("[!] Finish insertion node");
-
-                    coapClient.startTemperatureObservation(ipAddress);
-                    coapClient.startHumidityObservation(ipAddress);
-                    coapClient.startPresenceObservation(ipAddress, (int)area_id);
                 }
             }
 
@@ -68,7 +64,28 @@ public class RegistrationResource extends CoapResource {
             response.setPayload(jsonString_response);
             exchange.respond(response);
 
-            System.out.println(" > "+ jsonString_response );
+            System.out.println(" >  "+ jsonString_response );
+
+            if(jsonString_response.equals("{\"status\": \"server_ok\"}")){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                coapClient.startTemperatureObservation(ipAddress);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                coapClient.startHumidityObservation(ipAddress);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                coapClient.startPresenceObservation(ipAddress, (int)area_id);
+            }
 
         } catch (ParseException e) {
             e.printStackTrace();

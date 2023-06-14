@@ -176,6 +176,7 @@ PROCESS_THREAD(coap_node, ev, data)
 
                 if(btn_count > 0 && etimer_expired(&btn_etimer)){
                     if(!area_id_setted){
+                        LOG_INFO("[!] manual area_id setting...\n");
                         area_id = btn_count;
                         area_id_setted = true;
 
@@ -185,12 +186,13 @@ PROCESS_THREAD(coap_node, ev, data)
                         etimer_reset_with_new_interval(&led_etimer, 2 * CLOCK_SECOND);
                         PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
                         leds_single_off(LEDS_GREEN);
+                        LOG_INFO("[!] manual area_id setted\n");
 
                         // Red LED flashes while waiting for user interaction for node_id setting
                         etimer_set(&led_etimer,0.5 * CLOCK_SECOND);
                         leds_single_on(LEDS_RED);
 
-                        LOG_INFO("[!] manual node_id setting\n");
+                        LOG_INFO("[!] manual node_id setting...\n");
                         btn_count = 0;
                     }else{
                         node_id = btn_count;
@@ -201,6 +203,7 @@ PROCESS_THREAD(coap_node, ev, data)
                         etimer_reset_with_new_interval(&led_etimer, 2 * CLOCK_SECOND);
                         PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
                         leds_single_off(LEDS_GREEN);
+                        LOG_INFO("[!] manual node_id setted\n");
 
                         break;
                     }
