@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -46,19 +45,18 @@ public class UserInputController implements Runnable{
             try {
                 int command = Integer.parseInt(reader.readLine());
 
-                ResultSet result;
                 int area_id;
                 int max_presence;
 
                 switch (command) {
                     case 1:  // view area
-                        result = FitSenseDBHandler.getAreas();
-                        if (result != null) {
-                            while (result.next()) {
-                                System.out.println("id: " + result.getInt("id") +
-                                        "| name: " + result.getString("name") +
-                                        "| max_presence :" + result.getInt("max_presence"));
-
+                        ArrayList<ArrayList<String>> areas = FitSenseDBHandler.getAreas();
+                        assert areas != null;
+                        if (!areas.isEmpty()) {
+                            for(ArrayList<String> area : areas){
+                                System.out.println("id: " + area.get(0) +
+                                        "\t| name: " + area.get(1) +
+                                        "\t| max_presence: " + area.get(2));
                             }
                         } else {
                             System.out.println("There are no areas");
@@ -66,13 +64,13 @@ public class UserInputController implements Runnable{
                         break;
 
                     case 2: // view configurations
-                        result = FitSenseDBHandler.getConfigurations();
-                        if (result != null) {
-                            while (result.next()) {
-                                System.out.println("area_id: " + result.getInt("area_id") +
-                                        "| node_id: " + result.getInt("node_id") +
-                                        "| address: " + result.getString("address"));
-
+                        ArrayList<ArrayList<String>> nodes = FitSenseDBHandler.getConfigurations();
+                        assert nodes != null;
+                        if (!nodes.isEmpty()) {
+                            for(ArrayList<String> node : nodes){
+                                System.out.println("area_id: " + node.get(0) +
+                                        "\t| node_id: " + node.get(1) +
+                                        "\t| address: " + node.get(2));
                             }
                         } else {
                             System.out.println("There are no actuators");
@@ -292,15 +290,13 @@ public class UserInputController implements Runnable{
 
                     case 17: //exit
                             loop = false;
+                            System.exit(0);
                             break;
                     default:
                         System.out.println("You must insert an integer between 1 and 17");
                         break;
                 }
 
-            } catch (SQLException e){
-                e.printStackTrace();
-                throw new RuntimeException(e);
             } catch(IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);

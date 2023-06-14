@@ -156,7 +156,7 @@ public class FitSenseDBHandler {
     }
 
     public static void updateMaxPresenceArea (int area_id, int max_presence){
-        String updateQueryStatement = "UPDATE area SET max_presence = ? WHERE area_id = ?";
+        String updateQueryStatement = "UPDATE area SET max_presence = ? WHERE id = ?";
         try (Connection smartPoolConnection = makeDBConnection()
         ) {
             assert smartPoolConnection != null;
@@ -192,7 +192,8 @@ public class FitSenseDBHandler {
         return false;
     }
 
-    public static ResultSet getAreas(){
+    public static ArrayList<ArrayList<String>> getAreas(){
+        ArrayList<ArrayList<String>> res = new ArrayList<>();
         String selectQueryStatement = "SELECT * FROM area";
         try (Connection smartPoolConnection = makeDBConnection()
         ) {
@@ -200,8 +201,18 @@ public class FitSenseDBHandler {
             try (PreparedStatement smartPoolPrepareStat = smartPoolConnection.prepareStatement(selectQueryStatement)
             ) {
                 // Execute the query
-                return smartPoolPrepareStat.executeQuery();
-
+                ResultSet resultSet = smartPoolPrepareStat.executeQuery();
+                while (resultSet.next()) {
+                    int area_id = resultSet.getInt("id");
+                    String name = resultSet.getString("name_area");
+                    int max_presence = resultSet.getInt("max_presence");
+                    ArrayList<String> row = new ArrayList<>();
+                    row.add(String.valueOf(area_id));
+                    row.add(name);
+                    row.add(String.valueOf(max_presence));
+                    res.add(row);
+                }
+                return res;
             }
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
@@ -209,7 +220,8 @@ public class FitSenseDBHandler {
         return null;
     }
 
-    public static ResultSet getConfigurations(){
+    public static ArrayList<ArrayList<String>> getConfigurations(){
+        ArrayList<ArrayList<String>> res = new ArrayList<>();
         String selectQueryStatement = "SELECT * FROM configuration";
         try (Connection smartPoolConnection = makeDBConnection()
         ) {
@@ -217,7 +229,18 @@ public class FitSenseDBHandler {
             try (PreparedStatement smartPoolPrepareStat = smartPoolConnection.prepareStatement(selectQueryStatement)
             ) {
                 // Execute the query
-                return smartPoolPrepareStat.executeQuery();
+                ResultSet resultSet = smartPoolPrepareStat.executeQuery();
+                while (resultSet.next()) {
+                    int area_id = resultSet.getInt("area_id");
+                    int node_id = resultSet.getInt("node_id");
+                    String address = resultSet.getString("ipv6_address");
+                    ArrayList<String> row = new ArrayList<>();
+                    row.add(String.valueOf(area_id));
+                    row.add(String.valueOf(node_id));
+                    row.add(address);
+                    res.add(row);
+                }
+                return res;
 
             }
         } catch (SQLException sqlEx) {
