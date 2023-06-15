@@ -71,6 +71,9 @@
  * Transported in cleartext!
  */
 #define MQTT_CLIENT_CONF_AUTH_TOKEN "AUTHTOKEN"
+
+#define LOG_LEVEL_APP LOG_LEVEL_DBG
+
 /*---------------------------------------------------------------------------*/
 #endif /* PROJECT_CONF_H_ */
 /*---------------------------------------------------------------------------*/

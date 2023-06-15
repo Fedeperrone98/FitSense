@@ -1,7 +1,6 @@
 
 #include "contiki.h"
 #include "net/routing/routing.h"
-#include "mqtt.h"
 #include "net/ipv6/uip.h"
 #include "net/ipv6/uip-icmp6.h"
 #include "net/ipv6/sicslowpan.h"
@@ -28,7 +27,7 @@ static const char *broker_ip = MQTT_CLIENT_BROKER_IP_ADDR;
 
 // Default config values
 #define DEFAULT_BROKER_PORT         1883
-#define DEFAULT_PUBLISH_INTERVAL    (300 * CLOCK_SECOND) // every ten minutes
+#define DEFAULT_PUBLISH_INTERVAL    (300UL * CLOCK_SECOND) // every five minutes
 
 
 /*---------------------------------------------------------------------------*/
@@ -262,7 +261,7 @@ PROCESS_THREAD(mqtt_client_process, ev, data)
             memcpy(broker_address, broker_ip, strlen(broker_ip));
             
             mqtt_connect(&conn, broker_address, DEFAULT_BROKER_PORT,
-                        (DEFAULT_PUBLISH_INTERVAL * 3) / CLOCK_SECOND,
+                        (uint16_t) DEFAULT_PUBLISH_INTERVAL,
                         MQTT_CLEAN_SESSION_ON);
             state = STATE_CONNECTING;
         }

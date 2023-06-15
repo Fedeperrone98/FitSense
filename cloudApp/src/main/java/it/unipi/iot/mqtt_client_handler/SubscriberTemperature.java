@@ -6,8 +6,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
-
 public class SubscriberTemperature implements MqttCallback {
 
     String topic = "temperature";
@@ -30,11 +28,12 @@ public class SubscriberTemperature implements MqttCallback {
     public void messageArrived(String topic, MqttMessage mqttMessage){
 
         System.out.println("[!] Receiving temperature message");
-        System.out.println(" <  " + mqttMessage.toString());
+        String msg = new String(mqttMessage.getPayload());
+        System.out.println(" <  " + msg);
 
         JSONObject genreJsonObject;
         try {
-            genreJsonObject = (JSONObject) JSONValue.parseWithException(mqttMessage.toString());
+            genreJsonObject = (JSONObject) JSONValue.parseWithException(msg);
             long value = (long) genreJsonObject.get("value");
             long area_id = (long) genreJsonObject.get("area_id");
             long node_id = (long) genreJsonObject.get("node_id");

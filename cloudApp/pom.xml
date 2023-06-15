@@ -84,7 +84,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>mqtt_client.iot.unipi.it.MySubscriber</mainClass>
+                            <mainClass>it.unipi.iot.MainClass</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>

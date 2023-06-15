@@ -28,11 +28,12 @@ public class SubscriberPresence implements MqttCallback {
     public void messageArrived(String topic, MqttMessage mqttMessage) {
 
         System.out.println("[!] Receiving presence message");
-        System.out.println(" <  " + mqttMessage.toString());
+        String msg = new String(mqttMessage.getPayload());
+        System.out.println(" <  " + msg);
 
         JSONObject genreJsonObject;
         try {
-            genreJsonObject = (JSONObject) JSONValue.parseWithException(mqttMessage.toString());
+            genreJsonObject = (JSONObject) JSONValue.parseWithException(msg);
             long value = (long) genreJsonObject.get("value");
             long area_id = (long) genreJsonObject.get("area_id");
             long node_id = (long) genreJsonObject.get("node_id");
