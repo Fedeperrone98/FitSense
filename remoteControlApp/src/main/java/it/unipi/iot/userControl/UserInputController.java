@@ -5,7 +5,6 @@ import it.unipi.iot.db_handler.FitSenseDBHandler;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -38,8 +37,7 @@ public class UserInputController implements Runnable{
     }
 
     public void selectCommand(){
-        boolean loop = true;
-        while(loop){
+        while(true){
             showCommandList();
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             try {
@@ -289,9 +287,9 @@ public class UserInputController implements Runnable{
                         break;
 
                     case 17: //exit
-                            loop = false;
-                            System.exit(0);
-                            break;
+                        MyCoapClient.cancelObs();
+                        System.exit(0);
+                        break;
                     default:
                         System.out.println("You must insert an integer between 1 and 17");
                         break;

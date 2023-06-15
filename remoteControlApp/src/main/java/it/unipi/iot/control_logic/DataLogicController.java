@@ -106,13 +106,7 @@ public class DataLogicController implements Runnable {
             humidityController();
             System.out.println("[!] Start monitoring presence measurement...");
             presenceController();
-        } catch (ConnectorException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch(ParseException e) {
+        } catch (ConnectorException | ParseException | IOException e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }

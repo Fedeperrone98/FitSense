@@ -15,9 +15,15 @@ import java.io.IOException;
 public class MyCoapClient extends CoapClient {
 
     private static MyCoapClient instance = null;
-    private CoapClient clientAirConditioner = null;
-    private CoapClient clientDehumidifier = null;
-    private CoapClient clientSemaphore = null;
+
+    private static CoapClient clientTemperatureObs = null;
+    private static CoapClient clientAirConditioner = null;
+
+    private static CoapClient clientHumidityObs = null;
+    private static CoapClient clientDehumidifier = null;
+
+    private static CoapClient clientPresenceObs = null;
+    private static CoapClient clientSemaphore = null;
 
     public static MyCoapClient getInstance() {
         if (instance == null)
@@ -38,14 +44,11 @@ public class MyCoapClient extends CoapClient {
 
             JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
             long value_parsed = (long) genreJsonObject.get("value");
+
+            temperature.shutdown();
+
             return (int) value_parsed;
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (ConnectorException | IOException | ParseException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -65,14 +68,11 @@ public class MyCoapClient extends CoapClient {
 
             JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
             long value_parsed = (long) genreJsonObject.get("value");
+
+            humidity.shutdown();
+
             return (int) value_parsed;
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (ConnectorException | IOException | ParseException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -92,14 +92,11 @@ public class MyCoapClient extends CoapClient {
 
             JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
             long value_parsed = (long) genreJsonObject.get("value");
+
+            presence.shutdown();
+
             return (int) value_parsed;
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (ConnectorException | IOException | ParseException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -119,14 +116,11 @@ public class MyCoapClient extends CoapClient {
             System.out.println(" <  " + responseText);
 
             JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+
+            clientAirConditioner.shutdown();
+
             return (String) genreJsonObject.get("value");
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (ConnectorException | IOException | ParseException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -147,10 +141,8 @@ public class MyCoapClient extends CoapClient {
             } else {
                 System.out.println("[-] PUT request failed");
             }
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+            clientAirConditioner.shutdown();
+        } catch (ConnectorException | IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -170,15 +162,12 @@ public class MyCoapClient extends CoapClient {
             System.out.println(" <  " + responseText);
 
             JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+
+            clientDehumidifier.shutdown();
+
             return (String) genreJsonObject.get("value");
 
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (ConnectorException | IOException | ParseException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -198,10 +187,9 @@ public class MyCoapClient extends CoapClient {
             } else {
                 System.out.println("[-] PUT request failed");
             }
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+
+            clientDehumidifier.shutdown();
+        } catch (ConnectorException | IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -221,14 +209,11 @@ public class MyCoapClient extends CoapClient {
             System.out.println(" <  " + responseText);
 
             JSONObject genreJsonObject = (JSONObject) JSONValue.parseWithException(responseText);
+
+            clientSemaphore.shutdown();
+
             return (String) genreJsonObject.get("value");
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (ConnectorException | IOException | ParseException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -249,10 +234,8 @@ public class MyCoapClient extends CoapClient {
             } else {
                 System.out.println("[-] PUT request failed");
             }
-        } catch (ConnectorException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+            clientSemaphore.shutdown();
+        } catch (ConnectorException | IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -260,14 +243,16 @@ public class MyCoapClient extends CoapClient {
     }
 
     public void startTemperatureObservation(final String ipAddress) {
-        CoapClient clientTemperatureObs = new CoapClient("coap://[" + ipAddress + "]/actuator/temperature");
+        clientTemperatureObs = new CoapClient("coap://[" + ipAddress + "]/actuator/temperature");
         clientAirConditioner = new CoapClient("coap://[" + ipAddress + "]/actuator/air_conditioner");
         clientTemperatureObs.observe(
                 new CoapHandler() {
+                    @Override
                     public void onLoad(CoapResponse response) {
                         handleTemperatureResponse(response, ipAddress);
                     }
 
+                    @Override
                     public void onError() {
                         System.out.println("[-] Observing temperature failed");
                     }
@@ -317,27 +302,23 @@ public class MyCoapClient extends CoapClient {
                     System.out.println("[-] PUT request failed");
                 }
             }
-        } catch (ParseException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch( ConnectorException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch( IOException e) {
+        } catch (ParseException | ConnectorException | IOException e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
     public void startHumidityObservation(final String ipAddress) {
-        CoapClient clientHumidityObs = new CoapClient("coap://[" + ipAddress + "]/actuator/humidity");
+        clientHumidityObs = new CoapClient("coap://[" + ipAddress + "]/actuator/humidity");
         clientDehumidifier = new CoapClient("coap://[" + ipAddress + "]/actuator/dehumidifier");
         clientHumidityObs.observe(
                 new CoapHandler() {
+                    @Override
                     public void onLoad(CoapResponse response) {
                         handleHumidityResponse(response, ipAddress);
                     }
 
+                    @Override
                     public void onError() {
                         System.out.println("[-] Observing humidity failed");
                     }
@@ -388,27 +369,23 @@ public class MyCoapClient extends CoapClient {
                 }
             }
 
-        } catch (ParseException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch( ConnectorException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch( IOException e) {
+        } catch (ParseException | ConnectorException | IOException e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
     public void startPresenceObservation(final String ipAddress, final int area_id) {
-        CoapClient clientPresenceObs = new CoapClient("coap://[" + ipAddress + "]/actuator/presence");
+        clientPresenceObs = new CoapClient("coap://[" + ipAddress + "]/actuator/presence");
         clientSemaphore = new CoapClient("coap://[" + ipAddress + "]/actuator/semaphore");
         clientPresenceObs.observe(
                 new CoapHandler() {
+                    @Override
                     public void onLoad(CoapResponse response) {
                         handlePresenceResponse(response, area_id, ipAddress);
                     }
 
+                    @Override
                     public void onError() {
                         System.out.println("[-] Observing presence failed");
                     }
@@ -460,15 +437,20 @@ public class MyCoapClient extends CoapClient {
                 }
             }
 
-        } catch (ParseException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch( ConnectorException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch( IOException e) {
+        } catch (ParseException | ConnectorException | IOException e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public static void cancelObs(){
+        clientTemperatureObs.shutdown();
+        clientAirConditioner.shutdown();
+
+        clientHumidityObs.shutdown();
+        clientSemaphore.shutdown();
+
+        clientPresenceObs.shutdown();
+        clientDehumidifier.shutdown();
     }
 }
