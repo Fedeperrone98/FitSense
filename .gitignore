@@ -15,3 +15,5 @@ fit-sense/coap/build/cooja/*
 fit-sense/rpl-border-router/build/cooja/obj/*
 remoteControlApp/Californium3.properties
 remoteControlApp/.metadata/*
+cloudApp/.idea/*
+remoteControlApp/.idea/*

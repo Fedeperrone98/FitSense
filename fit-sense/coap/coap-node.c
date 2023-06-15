@@ -10,7 +10,7 @@
 
 /* Log configuration */
 #include "sys/log.h"
-#define LOG_MODULE "App"
+#define LOG_MODULE "Coap_node"
 #define LOG_LEVEL LOG_LEVEL_APP
 
 #define SERVER_EP           "coap://[fd00::1]:5683"

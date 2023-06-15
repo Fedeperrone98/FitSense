@@ -247,13 +247,10 @@ public class MyCoapClient extends CoapClient {
         clientAirConditioner = new CoapClient("coap://[" + ipAddress + "]/actuator/air_conditioner");
         clientTemperatureObs.observe(
                 new CoapHandler() {
-                    @Override
-                    public void onLoad(CoapResponse response) {
+                    @Override public void onLoad(CoapResponse response) {
                         handleTemperatureResponse(response, ipAddress);
                     }
-
-                    @Override
-                    public void onError() {
+                    @Override public void onError() {
                         System.out.println("[-] Observing temperature failed");
                     }
                 }
@@ -313,13 +310,10 @@ public class MyCoapClient extends CoapClient {
         clientDehumidifier = new CoapClient("coap://[" + ipAddress + "]/actuator/dehumidifier");
         clientHumidityObs.observe(
                 new CoapHandler() {
-                    @Override
-                    public void onLoad(CoapResponse response) {
+                    @Override public void onLoad(CoapResponse response) {
                         handleHumidityResponse(response, ipAddress);
                     }
-
-                    @Override
-                    public void onError() {
+                    @Override public void onError() {
                         System.out.println("[-] Observing humidity failed");
                     }
                 }
@@ -380,13 +374,10 @@ public class MyCoapClient extends CoapClient {
         clientSemaphore = new CoapClient("coap://[" + ipAddress + "]/actuator/semaphore");
         clientPresenceObs.observe(
                 new CoapHandler() {
-                    @Override
-                    public void onLoad(CoapResponse response) {
+                    @Override public void onLoad(CoapResponse response) {
                         handlePresenceResponse(response, area_id, ipAddress);
                     }
-
-                    @Override
-                    public void onError() {
+                    @Override public void onError() {
                         System.out.println("[-] Observing presence failed");
                     }
                 }
