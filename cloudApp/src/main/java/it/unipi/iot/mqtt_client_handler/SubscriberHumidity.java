@@ -37,7 +37,9 @@ public class SubscriberHumidity implements MqttCallback {
             long area_id = (long) genreJsonObject.get("area_id");
             long node_id = (long) genreJsonObject.get("node_id");
 
-            FitSenseDBHandler.insertTemperature((int)area_id,(int)node_id,(int)value);
+            System.out.println("[!] Insert humidity measurement into database");
+
+            FitSenseDBHandler.insertHumidity((int)area_id,(int)node_id,(int)value);
         }catch (ParseException e){
             e.printStackTrace();
             throw new RuntimeException(e);

@@ -38,6 +38,7 @@ public class SubscriberTemperature implements MqttCallback {
             long area_id = (long) genreJsonObject.get("area_id");
             long node_id = (long) genreJsonObject.get("node_id");
 
+            System.out.println("[!] Insert temperature measurement into database");
             FitSenseDBHandler.insertTemperature((int)area_id,(int)node_id,(int)value);
         }catch (ParseException e){
             e.printStackTrace();

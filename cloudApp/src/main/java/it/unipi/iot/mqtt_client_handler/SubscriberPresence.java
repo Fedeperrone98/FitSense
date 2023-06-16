@@ -38,7 +38,9 @@ public class SubscriberPresence implements MqttCallback {
             long area_id = (long) genreJsonObject.get("area_id");
             long node_id = (long) genreJsonObject.get("node_id");
 
-            FitSenseDBHandler.insertTemperature((int)area_id,(int)node_id,(int)value);
+            System.out.println("[!] Insert presence measurement into database");
+
+            FitSenseDBHandler.insertPresence((int)area_id,(int)node_id,(int)value);
         }catch (ParseException e){
             e.printStackTrace();
             throw new RuntimeException(e);

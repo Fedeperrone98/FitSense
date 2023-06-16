@@ -10,10 +10,12 @@
 #include "dev/button-hal.h"
 #include "dev/leds.h"
 #include "os/sys/log.h"
-#include "mqtt-client.h"
+#include "mqtt.h"
 
 #include <string.h>
 #include <strings.h>
+
+static struct etimer led_etimer;
 
 /* Log configuration */
 #define LOG_MODULE "Mqtt_node"
@@ -27,7 +29,7 @@ static const char *broker_ip = MQTT_CLIENT_BROKER_IP_ADDR;
 
 // Default config values
 #define DEFAULT_BROKER_PORT         1883
-#define DEFAULT_PUBLISH_INTERVAL    (300UL * CLOCK_SECOND) // every five minutes
+#define DEFAULT_PUBLISH_INTERVAL    (30 * CLOCK_SECOND) 
 
 
 /*---------------------------------------------------------------------------*/
@@ -70,6 +72,10 @@ static char pub_topic_presence[BUFFER_SIZE];
 #define STATE_MACHINE_PERIODIC     (CLOCK_SECOND >> 1)
 static struct etimer periodic_timer;
 
+// Periodic timer to publish a message
+#define PUB_PERIOD 120 * CLOCK_SECOND
+static struct etimer pub_timer;
+
 /*---------------------------------------------------------------------------*/
 /*
  * The main MQTT buffers.
@@ -90,7 +96,11 @@ char broker_address[CONFIG_IP_ADDR_STR_LEN];
 PROCESS(mqtt_client_process, "MQTT Client");
 
 
-
+void cleanArray(char* array, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        array[i] = '\0';
+    }
+}
 /*---------------------------------------------------------------------------*/
 static void
 pub_handler(const char *topic, uint16_t topic_len, const uint8_t *chunk,
@@ -241,13 +251,16 @@ PROCESS_THREAD(mqtt_client_process, ev, data)
   // Initialize periodic timer to check the status 
   etimer_set(&periodic_timer, STATE_MACHINE_PERIODIC);
 
+  // Initialize pub timer to publish messages
+  etimer_set(&pub_timer, 1 * CLOCK_SECOND);
+
   /* Main loop */
   while(1) {
 
     PROCESS_YIELD();
 
     if((ev == PROCESS_EVENT_TIMER && data == &periodic_timer) || 
-        ev == PROCESS_EVENT_POLL){
+        ev == PROCESS_EVENT_POLL || ( ev == PROCESS_EVENT_TIMER && data == &pub_timer) ){
                         
         if(state==STATE_INIT){
             if(have_connectivity()==true)  
@@ -261,7 +274,7 @@ PROCESS_THREAD(mqtt_client_process, ev, data)
             memcpy(broker_address, broker_ip, strlen(broker_ip));
             
             mqtt_connect(&conn, broker_address, DEFAULT_BROKER_PORT,
-                        (uint16_t) DEFAULT_PUBLISH_INTERVAL,
+                        ( DEFAULT_PUBLISH_INTERVAL * 3) / CLOCK_SECOND,
                         MQTT_CLEAN_SESSION_ON);
             state = STATE_CONNECTING;
         }
@@ -286,37 +299,57 @@ PROCESS_THREAD(mqtt_client_process, ev, data)
         }*/
 
             
-        if(state == STATE_CONNECTED){
+        if(state == STATE_CONNECTED && etimer_expired(&pub_timer)){
 
             // Pub temperature
             LOG_INFO("[!] Public message on topic temperature \n");
 
             sprintf(pub_topic_temperature, "%s", "temperature");
             
+			cleanArray(app_buffer, sizeof(app_buffer));
             set_temperature(app_buffer);
                 
             mqtt_publish(&conn, NULL, pub_topic_temperature, (uint8_t *)app_buffer,
                 strlen(app_buffer), MQTT_QOS_LEVEL_0, MQTT_RETAIN_OFF);
+			
+			leds_single_on(LEDS_GREEN);
+			etimer_set(&led_etimer, 2 * CLOCK_SECOND);
+			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
+			leds_single_off(LEDS_GREEN);
 
             // Pub humidity
             LOG_INFO("[!] Public message on topic humidity \n");
 
             sprintf(pub_topic_humidity, "%s", "humidity");
             
+			cleanArray(app_buffer, sizeof(app_buffer));
             set_humidity(app_buffer);
                 
             mqtt_publish(&conn, NULL, pub_topic_humidity, (uint8_t *)app_buffer,
                 strlen(app_buffer), MQTT_QOS_LEVEL_0, MQTT_RETAIN_OFF);
+
+			leds_single_on(LEDS_RED);
+			etimer_set(&led_etimer, 2 * CLOCK_SECOND);
+			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
+			leds_single_off(LEDS_RED);
 
             // Pub presence
             LOG_INFO("[!] Public message on topic presence \n");
 
             sprintf(pub_topic_presence, "%s", "presence");
             
+			cleanArray(app_buffer, sizeof(app_buffer));
             set_presence(app_buffer);
                 
             mqtt_publish(&conn, NULL, pub_topic_presence, (uint8_t *)app_buffer,
                 strlen(app_buffer), MQTT_QOS_LEVEL_0, MQTT_RETAIN_OFF);
+			
+			leds_single_on(LEDS_YELLOW);
+			etimer_set(&led_etimer, 2 * CLOCK_SECOND);
+			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
+			leds_single_off(LEDS_YELLOW);
+
+            etimer_set(&pub_timer, PUB_PERIOD);
         
         } else if ( state == STATE_DISCONNECTED ){
             LOG_INFO("[-] Disconnected form MQTT broker \n");
