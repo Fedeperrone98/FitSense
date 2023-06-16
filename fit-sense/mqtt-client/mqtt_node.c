@@ -72,8 +72,8 @@ static char pub_topic_presence[BUFFER_SIZE];
 #define STATE_MACHINE_PERIODIC     (CLOCK_SECOND >> 1)
 static struct etimer periodic_timer;
 
-// Periodic timer to publish a message
-#define PUB_PERIOD 120 * CLOCK_SECOND
+// Periodic timer to publish a message (every 30 sec)
+#define PUB_PERIOD 30 * CLOCK_SECOND
 static struct etimer pub_timer;
 
 /*---------------------------------------------------------------------------*/
