@@ -9,7 +9,6 @@
 #include <stdlib.h>
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
-static void res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_event_handler(void);
 
 static struct humidity_str{
@@ -23,7 +22,7 @@ EVENT_RESOURCE(
     "title=\"Humidity\";rt=\"Humidity\"",
     res_get_handler,
     NULL,
-    res_put_handler,
+    NULL,
     NULL,
     res_event_handler
 );
@@ -86,12 +85,6 @@ res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
     
     coap_set_header_content_format(response, TEXT_PLAIN);
     coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "%s", reply));
-}
-
-static void
-res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
-{
-    
 }
 
 static void

@@ -96,6 +96,7 @@ char broker_address[CONFIG_IP_ADDR_STR_LEN];
 PROCESS(mqtt_client_process, "MQTT Client");
 
 
+// Function to clean the message array
 void cleanArray(char* array, size_t size) {
     for (size_t i = 0; i < size; i++) {
         array[i] = '\0';
@@ -179,6 +180,8 @@ have_connectivity(void)
   return true;
 }
 
+
+// Functions to return measurement
 void set_temperature(char msg[]){
     int temperature = (5 + rand()%35);
 
@@ -278,27 +281,7 @@ PROCESS_THREAD(mqtt_client_process, ev, data)
                         MQTT_CLEAN_SESSION_ON);
             state = STATE_CONNECTING;
         }
-        
-        /*
-        if(state==STATE_CONNECTED){
-        
-            // Subscribe to a topic
-            strcpy(sub_topic,"actuator");
 
-            status = mqtt_subscribe(&conn, NULL, sub_topic, MQTT_QOS_LEVEL_0);
-
-            printf("Subscribing!\n");
-            if(status == MQTT_STATUS_OUT_QUEUE_FULL) {
-            LOG_ERR("Tried to subscribe but command queue was full!\n");
-            PROCESS_EXIT();
-            }
-            
-            state = STATE_SUBSCRIBED;
-        
-        
-        }*/
-
-            
         if(state == STATE_CONNECTED && etimer_expired(&pub_timer)){
 
             // Pub temperature
