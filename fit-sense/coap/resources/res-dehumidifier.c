@@ -23,7 +23,7 @@ RESOURCE(
 
 void send_dehumidifier_status(char msg[]){
 
-    sprintf(msg,"{\"cmd\":\"%s\",\"value\":%s}",
+    sprintf(msg,"{\"cmd\":\"%s\",\"value\":\"%s\"}",
         "dehumidifier_status",
         mode
         );

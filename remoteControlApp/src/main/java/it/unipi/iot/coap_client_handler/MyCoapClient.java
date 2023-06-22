@@ -12,7 +12,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 
-public class MyCoapClient extends CoapClient {
+public class MyCoapClient {
 
     private static MyCoapClient instance = null;
 

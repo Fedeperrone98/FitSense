@@ -23,7 +23,7 @@ RESOURCE(
 
 void send_air_conditioner_status(char msg[]){
 
-    sprintf(msg,"{\"cmd\":\"%s\",\"value\":%s}",
+    sprintf(msg,"{\"cmd\":\"%s\",\"value\":\"%s\"}",
         "air_conditioner_status",
         mode
         );

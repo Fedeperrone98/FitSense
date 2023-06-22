@@ -23,7 +23,7 @@ RESOURCE(
 
 void send_semaphore_status(char msg[]){
 
-    sprintf(msg,"{\"cmd\":\"%s\",\"value\":%s}",
+    sprintf(msg,"{\"cmd\":\"%s\",\"value\":\"%s\"}",
         "semaphorer_status",
         mode
         );
