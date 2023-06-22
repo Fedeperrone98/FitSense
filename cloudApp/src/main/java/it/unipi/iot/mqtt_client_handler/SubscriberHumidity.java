@@ -16,6 +16,7 @@ public class SubscriberHumidity implements MqttCallback {
         MqttClient mqttClient = new MqttClient(broker,clientId);
         mqttClient.setCallback( this );
         mqttClient.connect();
+        System.out.println("[!] Subscribing "+ topic + " topic");
         mqttClient.subscribe(topic);
     }
 

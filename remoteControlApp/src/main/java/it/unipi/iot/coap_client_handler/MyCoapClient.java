@@ -109,9 +109,7 @@ public class MyCoapClient {
         System.out.println("[+] GET request to air conditioner");
 
         try {
-            System.out.println("dentro il try");
             CoapResponse airConditionerResponse = clientAirConditioner.get();
-            System.out.println("ho fatto la get");
             String responseText = airConditionerResponse.getResponseText();
             System.out.println(" <  " + responseText);
 
@@ -155,9 +153,7 @@ public class MyCoapClient {
         // Send the get request to the dehumidifier
         System.out.println("[+] GET request to dehumidifier");
         try {
-            System.out.println("dentro il try");
             CoapResponse dehumidifierResponse = clientDehumidifier.get();
-            System.out.println("ho fatto la get");
             String responseText = dehumidifierResponse.getResponseText();
             System.out.println(" <  " + responseText);
 
@@ -202,9 +198,7 @@ public class MyCoapClient {
         // Send the get request to the semaphore
         System.out.println("[+] GET request to semaphore");
         try {
-            System.out.println("dentro il try");
             CoapResponse semaphoreResponse = clientSemaphore.get();
-            System.out.println("ho fatto la get");
             String responseText = semaphoreResponse.getResponseText();
             System.out.println(" <  " + responseText);
 
@@ -266,40 +260,11 @@ public class MyCoapClient {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
             long value = (long) genreJsonObject.get("value");
 
-            String jsonString_response;
-            String status = getRequestToAirConditioner(address);
-            if ((value > 24 || value < 19) && !status.equals("on")){
-                // send on message to air conditioner
-                jsonString_response = "{\"mode\": \"on\"}";
+            AirConditionerHandler airConditioner = new AirConditionerHandler((int) value, address);
+            Thread airConditionerThread = new Thread(airConditioner);
+            airConditionerThread.start();
 
-                // Send the PUT request to handle the air conditioner
-                System.out.println("[!] Sending PUT request to air conditioner");
-                System.out.println(" >  " + jsonString_response);
-                CoapResponse airConditionerResponse = clientAirConditioner.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-
-                // Check the response
-                if (airConditionerResponse.isSuccess()) {
-                    System.out.println("[+] PUT request succeeded");
-                } else {
-                    System.out.println("[-] PUT request failed");
-                }
-            } else if( (value <= 24 || value >= 19) && !status.equals("off")){
-                // send off message to air conditioner
-                jsonString_response = "{\"mode\": \"off\"}";
-
-                // Send the PUT request to handle the air conditioner
-                System.out.println("[!] Sending PUT request to air conditioner");
-                System.out.println(" >  " + jsonString_response);
-                CoapResponse airConditionerResponse = clientAirConditioner.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-
-                // Check the response
-                if (airConditionerResponse.isSuccess()) {
-                    System.out.println("[+] PUT request succeeded");
-                } else {
-                    System.out.println("[-] PUT request failed");
-                }
-            }
-        } catch (ParseException | ConnectorException | IOException e){
+        } catch (ParseException e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -329,41 +294,11 @@ public class MyCoapClient {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
             long value = (long) genreJsonObject.get("value");
 
-            String jsonString_response;
-            String status = getRequestToDehumidifier(address);
-            if ((value > 25 || value < 20) && !status.equals("on")){
-                // send on message to dehumidifier
-                jsonString_response = "{\"mode\": \"on\"}";
+            DehumidifierHandler dehumidifier = new DehumidifierHandler((int) value, address);
+            Thread dehumidifierThread = new Thread(dehumidifier);
+            dehumidifierThread.start();
 
-                // Send the PUT request to handle the dehumidifier
-                System.out.println("[!] Sending PUT request to dehumidifier");
-                System.out.println(" >  " + jsonString_response);
-                CoapResponse dehumidifierResponse = clientDehumidifier.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-
-                // Check the response
-                if (dehumidifierResponse.isSuccess()) {
-                    System.out.println("[+] PUT request succeeded");
-                } else {
-                    System.out.println("[-] PUT request failed");
-                }
-            } else if( (value <= 25 || value >= 20) && !status.equals("off")){
-                // send off message to dehumidifier
-                jsonString_response = "{\"mode\": \"off\"}";
-
-                // Send the PUT request to handle the dehumidifier
-                System.out.println("[!] Sending PUT request to dehumidifier");
-                System.out.println(" >  " + jsonString_response);
-                CoapResponse dehumidifierResponse = clientDehumidifier.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-
-                // Check the response
-                if (dehumidifierResponse.isSuccess()) {
-                    System.out.println("[+] PUT request succeeded");
-                } else {
-                    System.out.println("[-] PUT request failed");
-                }
-            }
-
-        } catch (ParseException | ConnectorException | IOException e){
+        } catch (ParseException e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -393,42 +328,11 @@ public class MyCoapClient {
             genreJsonObject = (JSONObject) JSONValue.parseWithException(responseString);
             long value = (long) genreJsonObject.get("value");
 
-            String jsonString_response;
-            String status = getRequestToSemaphore(address);
-            int maxPresence = FitSenseDBHandler.getMaxPresenceArea(area_id);
-            if (value > maxPresence && !status.equals("on")){
-                // send on message to semaphore
-                jsonString_response = "{\"mode\": \"on\"}";
+            SemaphoreHandler semaphore = new SemaphoreHandler((int) value, address, area_id);
+            Thread semaphoreThread = new Thread(semaphore);
+            semaphoreThread.start();
 
-                // Send the PUT request to handle the semaphore
-                System.out.println("[!] Sending PUT request to semaphore");
-                System.out.println(" >  " + jsonString_response);
-                CoapResponse semaphoreResponse = clientSemaphore.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-
-                // Check the response
-                if (semaphoreResponse.isSuccess()) {
-                    System.out.println("[+] PUT request succeeded");
-                } else {
-                    System.out.println("[-] PUT request failed");
-                }
-            } else  if( value <= maxPresence && !status.equals("off")){
-                // send off message to semaphore
-                jsonString_response = "{\"mode\": \"off\"}";
-
-                // Send the PUT request to handle the semaphore
-                System.out.println("[!] Sending PUT request to semaphore");
-                System.out.println(" >  " + jsonString_response);
-                CoapResponse semaphoreResponse = clientSemaphore.put(jsonString_response, MediaTypeRegistry.TEXT_PLAIN);
-
-                // Check the response
-                if (semaphoreResponse.isSuccess()) {
-                    System.out.println("[+] PUT request succeeded");
-                } else {
-                    System.out.println("[-] PUT request failed");
-                }
-            }
-
-        } catch (ParseException | ConnectorException | IOException e){
+        } catch (ParseException e){
             e.printStackTrace();
             throw new RuntimeException(e);
         }

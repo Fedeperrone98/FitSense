@@ -52,7 +52,7 @@ res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
     char reply[MSG_SIZE];
     int len = coap_get_payload(request, &arg);
     if (len <= 0){
-        LOG_INFO("[-] no argument obteined from put request of config_rsc");
+        LOG_INFO("[-] no argument obteined from put request of config_rsc\n");
         return;
     }
     sprintf(msg, "%s", (char*)arg);
@@ -61,17 +61,20 @@ res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
     char arguments[n_arguments][100];
     parse_json(msg, n_arguments, arguments );
 
+    cleanArray(mode, sizeof(mode));
     strcpy(mode, arguments[0]);
     send_dehumidifier_status(reply);
 
     coap_set_header_content_format(response, TEXT_PLAIN);
     coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "%s", reply));
 
-    if(strcmp(mode, "on")){
+    if(!strncmp(mode, "on")){
         set_dehumidifier_status(true);
+        LOG_INFO("[!] Turn on YELLOW LED\n");
         leds_single_on(LEDS_YELLOW);
     } else{
         set_dehumidifier_status(false);
+        LOG_INFO("[!] Turn off YELLOW LED\n");
         leds_single_off(LEDS_YELLOW);
     }
 }
