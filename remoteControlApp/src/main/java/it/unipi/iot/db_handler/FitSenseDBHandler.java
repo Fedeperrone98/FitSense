@@ -204,7 +204,7 @@ public class FitSenseDBHandler {
                 smartPoolPrepareStat.setInt(1, id);
                 // Execute the query
                 ResultSet resultSet = smartPoolPrepareStat.executeQuery();
-
+                resultSet.next();
                 return resultSet.getInt("max_presence");
 
             }
@@ -258,6 +258,7 @@ public class FitSenseDBHandler {
                             smartPoolPrepareStat2.setTimestamp(2, maxTime);
                             // Execute the query
                             ResultSet resultSet2 = smartPoolPrepareStat2.executeQuery();
+                            resultSet2.next();
                             result.put(currentAreaId, resultSet2.getInt("m_value"));
                         }
                     } catch (SQLException sqlEx) {
@@ -298,6 +299,7 @@ public class FitSenseDBHandler {
                             smartPoolPrepareStat2.setTimestamp(2, maxTime);
                             // Execute the query
                             ResultSet resultSet2 = smartPoolPrepareStat2.executeQuery();
+                            resultSet2.next();
                             result.put(currentAreaId, resultSet2.getInt("m_value"));
                         }
                     } catch (SQLException sqlEx) {
@@ -338,6 +340,7 @@ public class FitSenseDBHandler {
                             smartPoolPrepareStat2.setTimestamp(2, maxTime);
                             // Execute the query
                             ResultSet resultSet2 = smartPoolPrepareStat2.executeQuery();
+                            resultSet2.next();
                             result.put(currentAreaId, resultSet2.getInt("m_value"));
                         }
                     } catch (SQLException sqlEx) {

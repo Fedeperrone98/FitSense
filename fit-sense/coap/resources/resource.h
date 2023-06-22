@@ -1,6 +1,8 @@
 #ifndef RESOURCE_H_
 #define RESOURCE_H_
 
+#include <stddef.h>
+
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
 
@@ -17,5 +19,6 @@ void parse_json(char json[], int n_arguments, char arguments[][100]);
 void set_air_conditioner_status(bool on);
 void set_dehumidifier_status(bool on);
 void set_air_conditioner_status(bool on);
+void cleanArray(char* array, size_t size);
 
 #endif
