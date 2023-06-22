@@ -68,7 +68,7 @@ res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
     coap_set_header_content_format(response, TEXT_PLAIN);
     coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "%s", reply));
 
-    if(!strncmp(mode, "on")){
+    if(!strcmp(mode, "on")){
         set_dehumidifier_status(true);
         LOG_INFO("[!] Turn on YELLOW LED\n");
         leds_single_on(LEDS_YELLOW);
