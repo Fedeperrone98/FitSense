@@ -142,6 +142,9 @@ PROCESS_THREAD(coap_node, ev, data)
 
     PROCESS_BEGIN();
 
+    // Initialize the LED
+    leds_init();
+
     LOG_INFO("[!] initialization COAP node...\n");
 
     // set node_id and area_id

@@ -236,6 +236,9 @@ PROCESS_THREAD(mqtt_client_process, ev, data)
 {
 
   PROCESS_BEGIN();
+
+  // Initialize the LED
+  leds_init();
   
   LOG_INFO("[!] Start MQTT node \n");
 
@@ -311,10 +314,10 @@ PROCESS_THREAD(mqtt_client_process, ev, data)
             mqtt_publish(&conn, NULL, pub_topic_humidity, (uint8_t *)app_buffer,
                 strlen(app_buffer), MQTT_QOS_LEVEL_0, MQTT_RETAIN_OFF);
 
-			leds_single_on(LEDS_YELLOW);
+			leds_single_on(LEDS_BLUE);
 			etimer_set(&led_etimer, 2 * CLOCK_SECOND);
 			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&led_etimer));
-			leds_single_off(LEDS_YELLOW);
+			leds_single_off(LEDS_BLUE);
 
             // Pub presence
             LOG_INFO("[!] Public message on topic presence \n");
