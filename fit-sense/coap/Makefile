@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = coap-example-server
+CONTIKI_PROJECT = coap_node
 all: $(CONTIKI_PROJECT)
 
 # Do not try to build on Sky because of code size limitation
