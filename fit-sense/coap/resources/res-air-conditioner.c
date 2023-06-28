@@ -78,10 +78,10 @@ res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
     if(!strcmp(mode, "on")){
         set_air_conditioner_status(true);
         LOG_INFO("[!] Turn on GREEN LED\n");
-        leds_single_on(LEDS_GREEN);
+        leds_on(LEDS_GREEN);
     } else{
         set_air_conditioner_status(false);
         LOG_INFO("[!] Turn off GREEN LED\n");
-        leds_single_off(LEDS_GREEN);
+        leds_off(LEDS_GREEN);
     }
 }

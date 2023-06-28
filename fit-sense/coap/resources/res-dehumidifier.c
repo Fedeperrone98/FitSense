@@ -71,10 +71,10 @@ res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
     if(!strcmp(mode, "on")){
         set_dehumidifier_status(true);
         LOG_INFO("[!] Turn on BLUE LED\n");
-        leds_single_toggle(LEDS_BLUE);
+        leds_on(LEDS_BLUE);
     } else{
         set_dehumidifier_status(false);
         LOG_INFO("[!] Turn off BLUE LED\n");
-        leds_single_toggle(LEDS_BLUE);
+        leds_off(LEDS_BLUE);
     }
 }

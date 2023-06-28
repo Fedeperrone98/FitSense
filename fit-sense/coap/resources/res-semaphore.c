@@ -70,10 +70,10 @@ res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
 
     if(!strcmp(mode, "on")){
         LOG_INFO("[!] Turn on RED LED\n");
-        leds_single_on(LEDS_RED);
+        leds_on(LEDS_RED);
     } else{
         LOG_INFO("[!] Turn off RED LED\n");
-        leds_single_off(LEDS_RED);
+        leds_off(LEDS_RED);
     }
 
 }
